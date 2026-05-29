@@ -1,3 +1,6 @@
+#pragma once
+#include "../domain/AlarmContext.h"
+
 class AlarmContext;
 
 class IAppState {
