@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 #include "./Alarm.h"
-#include "./ScreenRepository.h"
+#include "./UIManager.h"
 
 class ISound;
 class IClock;
@@ -18,8 +18,7 @@ class AlarmContext {
 		std::shared_ptr<IClock> clockSys_;
 		std::shared_ptr<IInput> input_;
 		std::vector<Alarm> alarms_;
-		std::shared_ptr<ScreenRepository> screenRepo_;
-		std::shared_ptr<IScreen> currentScreen_;
+		std::shared_ptr<UIManager> screenRepo_;
 	public:
 		AlarmContext(std::shared_ptr<ISound> sound, std::shared_ptr<IClock> clock, std::shared_ptr<IInput> input);
 
