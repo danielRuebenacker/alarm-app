@@ -1,5 +1,5 @@
 #include <ctime>
-#include "../structs/TimePoint.h"
+#include "../types/TimePoint.h"
 
 // interface to supply the current time
 class IClock {
