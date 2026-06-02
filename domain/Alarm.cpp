@@ -17,7 +17,7 @@ int Alarm::getMinutesUntilRing(const TimePoint currentTime) {
 	return (currentMins - time_.minutesSinceMidnight() + totalMins) % totalMins;
 }
 
-bool Alarm::snoozePossible(int currentSnoozes = 0) {
+bool Alarm::snoozePossible(int currentSnoozes) {
 	return (currentSnoozes <= maxSnoozes_);
 };
 
@@ -33,7 +33,7 @@ void Alarm::turnOn() {
 
 bool Alarm::shouldTrigger(const TimePoint currentTime, int currentSnoozes) {
 	// alarm must be active, not have rung or snoozable, and past the current time point
-        return isActive_ &&
-               (!hasTriggered_ || snoozePossible(currentSnoozes)) &&
-               (currentTime.minutesSinceMidnight() >= time_.minutesSinceMidnight());
+	return isActive_ &&
+		   (!hasTriggered_ || snoozePossible(currentSnoozes)) &&
+		   (currentTime.minutesSinceMidnight() >= time_.minutesSinceMidnight());
 }

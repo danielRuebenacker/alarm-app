@@ -21,7 +21,7 @@ class Alarm {
 		Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask = 0);
 		TimePoint getTime();
 		int getMinutesUntilRing(const TimePoint currentTime);
-		bool snoozePossible(int currentSnoozes);
+		bool snoozePossible(int currentSnoozes = 0);
 		void turnOff();
 		void turnOn();
 		bool shouldTrigger(const TimePoint currentTime, int currentSnoozes = 0);
