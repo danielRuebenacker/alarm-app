@@ -1,6 +1,6 @@
 #include "../interfaces/IPuzzle.h"
 #include "../types/PuzzleType.h"
-#include "../Puzzles/MathPuzzle.cpp"
+#include "../puzzles/MathPuzzle.cpp"
 
 #include <memory>
 #include <stdexcept>
