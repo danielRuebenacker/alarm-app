@@ -2,8 +2,8 @@
 
 Alarm::Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask)
     : time_(time), isActive_(false), hasTriggered_(false),
-      snoozeMinutes_(Alarm::DEFAULT_SNOOZES),
-      maxSnoozes_(Alarm::DEFAULT_SNOOZE_TIME), puzzleType_(puzzleType),
+      snoozeMinutes_(Alarm::DEFAULT_SNOOZE_TIME),
+      maxSnoozes_(Alarm::DEFAULT_SNOOZES), puzzleType_(puzzleType),
       dayMask_(dayMask) {}
 
 TimePoint Alarm::getTime() {
