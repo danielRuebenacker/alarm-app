@@ -4,20 +4,25 @@
 
 class Alarm {
 	private:
-		TimePoint time;
-		bool isActive;
-		bool hasTriggered;
-		int snoozeMinutes;
-		int maxSnoozes;
-		PuzzleType puzzleType;
-		uint8_t dayMask;
+		TimePoint time_;
+		bool isActive_;
+		bool hasTriggered_;
+		int snoozeMinutes_;
+		int maxSnoozes_;
+		PuzzleType puzzleType_;
+		uint8_t dayMask_;
+
+		// static
+		static constexpr int DEFAULT_SNOOZES = 3;
+		static constexpr int DEFAULT_SNOOZE_TIME = 5;
 
 	public:
-		Alarm(TimePoint t, PuzzleType puzzle, uint8_t days);
+		// by default doesn't repeat on days
+		Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask = 0);
 		TimePoint getTime();
 		int getMinutesUntilRing(const TimePoint currentTime);
-		bool snooze();
-		bool turnOff();
-		bool turnOn();
-		bool shouldTrigger(const TimePoint currentTime);
+		bool snoozePossible(int currentSnoozes);
+		void turnOff();
+		void turnOn();
+		bool shouldTrigger(const TimePoint currentTime, int currentSnoozes = 0);
 };
