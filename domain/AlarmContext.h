@@ -18,6 +18,7 @@ class AlarmContext {
 		AlarmContext(std::shared_ptr<ISound> sound, std::shared_ptr<IClock> clock);
 
 		void changeState(std::unique_ptr<IAppState> newState);
+		void setup();
 		void update();
 		std::shared_ptr<IClock> getClock();
 		std::shared_ptr<ISound> getSound();
