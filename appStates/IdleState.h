@@ -3,7 +3,8 @@
 class IdleState : public IAppState {
 	public:
 		void enter(AlarmContext* context) override {
-
+			// show home screen
+			context->getUI()->getScreen("home")->load();
 		}
 
 		void update(AlarmContext* context) override {
