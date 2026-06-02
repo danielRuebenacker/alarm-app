@@ -1,8 +1,9 @@
 #include <ctime>
+#include "../structs/TimePoint.h"
 
 // interface to supply the current time
 class IClock {
 	public:
 		virtual ~IClock() = default;
-		virtual std::tm now() const = 0;
+		virtual TimePoint now() const = 0;
 };
