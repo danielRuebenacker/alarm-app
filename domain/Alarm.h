@@ -15,7 +15,7 @@ class Alarm {
 	public:
 		Alarm(TimePoint t, PuzzleType puzzle, uint8_t days);
 		TimePoint getTime();
-		int getMinutesUntilRing();
+		int getMinutesUntilRing(const TimePoint currentTime);
 		bool snooze();
 		bool turnOff();
 		bool turnOn();

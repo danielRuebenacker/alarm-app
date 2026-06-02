@@ -7,6 +7,9 @@ TimePoint Alarm::getTime() {
 	return time;
 }
 
-int Alarm::getMinutesUntilRing() {
-	return time.min;
+int Alarm::getMinutesUntilRing(const TimePoint currentTime) {
+	int currentMins = currentTime.minutesSinceMidnight();
+	// for now ignore daymask, just return until next day
+	int totalMins = TimePoint::DAY_MINUTES;
+	return (currentMins - time.minutesSinceMidnight() + totalMins) % totalMins;
 }
