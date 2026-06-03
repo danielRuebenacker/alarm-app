@@ -3,9 +3,9 @@
 #include "../domain/Alarm.h"
 
 // allows to save to/load from flash memory/SD card
-class IAlarmStorage {
+class IStorage {
 	public: 
-		virtual ~IAlarmStorage() = default;
+		virtual ~IStorage() = default;
 		virtual void saveAlarms(const std::vector<Alarm> alarms) = 0;
 		virtual std::vector<Alarm> loadAlarms() = 0;
 };

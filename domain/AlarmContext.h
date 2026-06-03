@@ -9,7 +9,7 @@ class IClock;
 class IInput;
 class IAppState;
 class IScreen;
-class IAlarmStorage;
+class IStorage;
 class AlarmManager;
 
 // the app's state machine
@@ -21,14 +21,15 @@ class AlarmContext {
 		std::shared_ptr<IInput> 	input_;
 		std::shared_ptr<UIManager> 	ui_;
 		std::shared_ptr<AlarmManager> 	alarmManager_;
-		std::shared_ptr<IAlarmStorage> 	storage_;
+		std::shared_ptr<IStorage> 	storage_;
 		std::vector<Alarm> 			alarms_;
 	public:
           AlarmContext(std::shared_ptr<ISound> sound,
                        std::shared_ptr<IClock> clock,
                        std::shared_ptr<IInput> input,
                        std::shared_ptr<UIManager> ui,
-                       std::shared_ptr<IAlarmStorage> storage_);
+                       std::shared_ptr<IStorage> storage_,
+                       std::shared_ptr<AlarmManager> alarmManager_);
 
           ~AlarmContext() = default;
           // don't allow copying

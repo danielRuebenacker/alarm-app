@@ -6,7 +6,7 @@ class MathPuzzle : public IPuzzle {
 	public:
 		MathPuzzle() {
 			// use random num generator or something
-			ansewer = 0;
+			answer = 0;
 		}
 		void display() override {
 			// draw to screen, e.g. 2+2
@@ -15,6 +15,5 @@ class MathPuzzle : public IPuzzle {
 		bool verifySolution() override {
 			// get number input (e.g. from keypad), verify solution
 			// don't worry about how to get, will use UI input
-			return (anser == )
 		}
 };

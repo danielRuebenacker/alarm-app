@@ -1,30 +1,39 @@
 #include "AlarmContext.h"
 #include "UIManager.h"
+#include "AlarmManager.h"
 
 #include "../appStates/IdleState.h"
 #include "../interfaces/IClock.h"
 #include "../interfaces/ISound.h"
 #include "../interfaces/IInput.h"
-#include "../interfaces/IAlarmStorage.h"
+#include "../interfaces/IStorage.h"
 
 AlarmContext::AlarmContext(std::shared_ptr<ISound> sound,
                            std::shared_ptr<IClock> clock,
                            std::shared_ptr<IInput> input,
                            std::shared_ptr<UIManager> ui,
-                           std::shared_ptr<IAlarmStorage> storage)
-    : sound_(sound), clock_(clock), input_(input), ui_(ui), storage_(storage) {}
+                           std::shared_ptr<IStorage> storage,
+                           std::shared_ptr<AlarmManager> alarmManager)
+    : sound_(sound), clock_(clock), input_(input), ui_(ui), storage_(storage), alarmManager_(alarmManager) {}
 
 void AlarmContext::changeState(std::unique_ptr<IAppState> newState) {
 	if (newState) {
 		currentState_ = std::move(newState);
+		// run enter
+		currentState_->enter(this);
 	}
 }
 
 void AlarmContext::setup() {
 	// initialise UI (delegate to UIManager), set idle state
 	changeState(std::make_unique<IdleState>());
-	// load alarms
+	// have alarm manager load alarms
 	std::vector<Alarm> alarms = storage_->loadAlarms();
+}
+
+void AlarmContext::update() {
+	ui_->update();
+	currentState_->update(this);
 }
 
 
