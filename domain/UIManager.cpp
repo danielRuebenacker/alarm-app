@@ -12,3 +12,9 @@ std::shared_ptr<IScreen> UIManager::getScreen(std::string screenID) {
 void UIManager::registerScreen(std::string screenID, std::shared_ptr<IScreen> screen) {
 	screens.insert({screenID, screen});
 }
+
+void UIManager::loadScreen(std::string screenID) {
+	std::shared_ptr<IScreen> newScreen = getScreen(screenID);
+	newScreen->load();
+	currentScreen = newScreen;
+}
