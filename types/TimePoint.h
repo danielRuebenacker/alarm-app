@@ -13,3 +13,4 @@ class TimePoint {
 		int hour_;
 		int min_;
 };
+bool operator<(const TimePoint& t1, const TimePoint& t2);

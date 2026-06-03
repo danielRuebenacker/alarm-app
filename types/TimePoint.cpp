@@ -15,3 +15,10 @@ int TimePoint::minutesSinceMidnight() const {
 
 int TimePoint::hour() const { return hour_; }
 int TimePoint::min() const { return min_; }
+
+bool operator<(const TimePoint& t1, const TimePoint& t2) {
+	if (t1.hour() != t2.hour()) {
+		return t1.hour() < t2.hour();
+	}
+	return t1.min() < t2.min();
+}
