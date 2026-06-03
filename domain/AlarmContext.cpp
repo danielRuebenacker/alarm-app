@@ -28,7 +28,8 @@ void AlarmContext::setup() {
 	// initialise UI (delegate to UIManager), set idle state
 	changeState(std::make_unique<IdleState>());
 	// have alarm manager load alarms
-	std::vector<Alarm> alarms = storage_->loadAlarms();
+	alarmManager_->getAlarmsFromStorage(*storage_);
+	ui_->loadScreen("home");
 }
 
 void AlarmContext::update() {

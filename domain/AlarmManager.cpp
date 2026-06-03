@@ -33,6 +33,8 @@ void AlarmManager::getAlarmsFromStorage(IStorage& storage) {
 	std::vector<Alarm> loadedAlarms = storage.loadAlarms();
 	// replace
 	alarms = loadedAlarms;
+	// make active ones
+	makeActiveAlarms();
 }
 
 Alarm* AlarmManager::getNextActiveAlarm(TimePoint now) {
