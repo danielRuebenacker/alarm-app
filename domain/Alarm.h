@@ -3,8 +3,14 @@
 #include "../types/PuzzleType.h"
 #include "../types/DayMask.h"
 
+#include <atomic>
+
 class Alarm {
 	private:
+		// id
+		static std::atomic<int> nextId;
+		int id;
+
 		TimePoint time_;
 		bool isActive_;
 		bool hasTriggered_;
@@ -20,6 +26,7 @@ class Alarm {
 	public:
 		// by default doesn't repeat on days
 		Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask = 0);
+		int getId() const;
 		TimePoint getTime() const;
 		int getMinutesUntilRing(const TimePoint currentTime);
 		bool snoozePossible(int currentSnoozes = 0);

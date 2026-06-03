@@ -4,7 +4,11 @@ Alarm::Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask)
     : time_(time), isActive_(false), hasTriggered_(false),
       snoozeMinutes_(Alarm::DEFAULT_SNOOZE_TIME),
       maxSnoozes_(Alarm::DEFAULT_SNOOZES), puzzleType_(puzzleType),
-      dayMask_(dayMask) {}
+      dayMask_(dayMask) {
+		  id = nextId++;
+	  }
+
+int Alarm::getId() const { return id; }
 
 TimePoint Alarm::getTime() const {
 	return time_;
