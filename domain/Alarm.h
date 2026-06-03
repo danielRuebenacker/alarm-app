@@ -20,7 +20,7 @@ class Alarm {
 	public:
 		// by default doesn't repeat on days
 		Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask = 0);
-		TimePoint getTime();
+		TimePoint getTime() const;
 		int getMinutesUntilRing(const TimePoint currentTime);
 		bool snoozePossible(int currentSnoozes = 0);
 		void turnOff();

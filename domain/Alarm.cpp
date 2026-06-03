@@ -6,7 +6,7 @@ Alarm::Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask)
       maxSnoozes_(Alarm::DEFAULT_SNOOZES), puzzleType_(puzzleType),
       dayMask_(dayMask) {}
 
-TimePoint Alarm::getTime() {
+TimePoint Alarm::getTime() const {
 	return time_;
 }
 
