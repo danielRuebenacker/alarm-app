@@ -28,6 +28,8 @@ class Alarm {
 		Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask = 0);
 		int getId() const;
 		TimePoint getTime() const;
+		bool isActive() const;
+
 		int getMinutesUntilRing(const TimePoint currentTime);
 		bool snoozePossible(int currentSnoozes = 0);
 		void turnOff();

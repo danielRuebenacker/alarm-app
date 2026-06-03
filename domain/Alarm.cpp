@@ -14,6 +14,10 @@ TimePoint Alarm::getTime() const {
 	return time_;
 }
 
+bool Alarm::isActive() const {
+	return isActive_;
+}
+
 int Alarm::getMinutesUntilRing(const TimePoint currentTime) {
 	int currentMins = currentTime.minutesSinceMidnight();
 	// for now ignore daymask, just return until next day
