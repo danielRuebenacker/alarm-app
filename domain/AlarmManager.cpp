@@ -21,6 +21,14 @@ void AlarmManager::setAlarm(const Alarm alarm) {
 	alarms.insert(it, alarm);
 }
 
+void AlarmManager::makeActiveAlarms() {
+	for (const auto& alarm : alarms) {
+		if (alarm.isActive()) {
+			activeAlarms.push_back(alarm);
+		}
+	}
+}
+
 void AlarmManager::getAlarmsFromStorage(IStorage& storage) {
 	std::vector<Alarm> loadedAlarms = storage.loadAlarms();
 	// replace
@@ -28,7 +36,12 @@ void AlarmManager::getAlarmsFromStorage(IStorage& storage) {
 }
 
 Alarm* AlarmManager::getNextActiveAlarm(TimePoint now) {
-	// prototype
+	// first one in list
+	for (auto& alarm : activeAlarms) {
+		if (now < alarm.getTime()) {
+			return &alarm;
+		}
+	}
 	return nullptr;
 }
 
