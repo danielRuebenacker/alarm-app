@@ -43,8 +43,8 @@ class AlarmContext {
           void changeState(std::unique_ptr<IAppState> newState);
           void setup();
           void update();
-          IClock &getClock();
-          ISound &getSound();
-          IInput &getInput();
-          UIManager &getUI();
+          IClock& getClock();
+          ISound& getSound();
+          IInput& getInput();
+          UIManager& getUI();
 };

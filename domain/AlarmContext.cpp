@@ -7,6 +7,7 @@
 #include "../interfaces/ISound.h"
 #include "../interfaces/IInput.h"
 #include "../interfaces/IStorage.h"
+#include "../interfaces/IAppState.h"
 
 AlarmContext::AlarmContext(std::shared_ptr<ISound> sound,
                            std::shared_ptr<IClock> clock,
@@ -19,8 +20,6 @@ AlarmContext::AlarmContext(std::shared_ptr<ISound> sound,
 void AlarmContext::changeState(std::unique_ptr<IAppState> newState) {
 	if (newState) {
 		currentState_ = std::move(newState);
-		// run enter
-		currentState_->enter(this);
 	}
 }
 

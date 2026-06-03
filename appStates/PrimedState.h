@@ -1,17 +1,13 @@
+#pragma once
 #include "../interfaces/IAppState.h"
+#include "../interfaces/IClock.h"
+#include "../domain/Alarm.h"
 
 class PrimedState : public IAppState {
 	public:
-		void enter(AlarmContext* context) override {
-			// show primed notification?
-		}
-
 		void update(AlarmContext* context) override {
-			// regular, don't need to check for alarms
-			context->getUI().update();
-		}
-
-		void exit(AlarmContext* context) override {
-			// alarm disabled/canceled notification?
+			// check whether alarm time exceeded
+			TimePoint now = context->getClock().now();
+			// Alarm* nextAlarm = context->
 		}
 };
