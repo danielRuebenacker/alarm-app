@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include "../domain/Alarm.h"
 
