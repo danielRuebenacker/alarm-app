@@ -15,8 +15,8 @@ class AlarmManager {
 	public:
 		std::vector<Alarm> getAlarms();
 		std::vector<Alarm> getActiveAlarms();
-		void setAlarm(Alarm alarm);
-		void getAlarmsFromStorage(IStorage& storage);
-		Alarm* getNextActiveAlarm(TimePoint now);
+		void setAlarm(const Alarm& alarm, const TimePoint& now);
+		void getAlarmsFromStorage(const IStorage& storage);
+		Alarm* getNextActiveAlarm(const TimePoint& now);
 		void cancelAlarm(int alarmID);
 };

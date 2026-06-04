@@ -7,5 +7,5 @@ class IStorage {
 	public: 
 		virtual ~IStorage() = default;
 		virtual void saveAlarms(const std::vector<Alarm> alarms) = 0;
-		virtual std::vector<Alarm> loadAlarms() = 0;
+		virtual std::vector<Alarm> loadAlarms() const = 0;
 };
