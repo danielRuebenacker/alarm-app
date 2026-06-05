@@ -3,8 +3,8 @@
 #include "AlarmManager.h"
 
 #include "../appStates/IdleState.h"
-#include "../interfaces/IClock.h"
 #include "../interfaces/ISound.h"
+#include "../interfaces/IClock.h"
 #include "../interfaces/IInput.h"
 #include "../interfaces/IStorage.h"
 #include "../interfaces/IAppState.h"
@@ -27,7 +27,8 @@ void AlarmContext::setup() {
 	// initialise UI (delegate to UIManager), set idle state
 	changeState(std::make_unique<IdleState>());
 	// have alarm manager load alarms
-	alarmManager_->getAlarmsFromStorage(*storage_);
+	alarmManager_->getAlarmsFromStorage(*storage_, clock_->now());
+	// go to home screen
 	ui_->loadScreen("home");
 }
 
@@ -51,4 +52,8 @@ IInput& AlarmContext::getInput(){
 
 UIManager& AlarmContext::getUI(){
 	return *ui_;
+}
+
+AlarmManager& AlarmContext::getAlarmManager(){
+	return *alarmManager_;
 }

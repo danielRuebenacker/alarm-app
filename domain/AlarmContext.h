@@ -47,4 +47,5 @@ class AlarmContext {
           ISound& getSound();
           IInput& getInput();
           UIManager& getUI();
+          AlarmManager& getAlarmManager();
 };
