@@ -30,9 +30,9 @@ class Alarm {
 		TimePoint getTime() const;
 		bool isActive() const;
 
-		int getMinutesUntilRing(const TimePoint currentTime) const;
+		int getMinutesUntilRing(const TimePoint& currentTime) const;
 		bool snoozePossible(int currentSnoozes = 0) const;
 		void turnOff();
 		void turnOn();
-		bool shouldTrigger(const TimePoint currentTime, int currentSnoozes = 0) const;
+		bool shouldTrigger(const TimePoint& currentTime, int currentSnoozes = 0) const;
 };

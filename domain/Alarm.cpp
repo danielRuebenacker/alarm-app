@@ -1,4 +1,5 @@
 #include "Alarm.h"
+#include <climits>
 
 Alarm::Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask)
     : time_(time), isActive_(false), hasTriggered_(false),
@@ -18,14 +19,16 @@ bool Alarm::isActive() const {
 	return isActive_;
 }
 
-int Alarm::getMinutesUntilRing(const TimePoint currentTime) {
+int Alarm::getMinutesUntilRing(const TimePoint& currentTime) const {
+	if (!isActive_) return INT_MAX;
+
 	int currentMins = currentTime.minutesSinceMidnight();
 	// for now ignore daymask, just return until next day
 	int totalMins = TimePoint::DAY_MINUTES;
 	return (currentMins - time_.minutesSinceMidnight() + totalMins) % totalMins;
 }
 
-bool Alarm::snoozePossible(int currentSnoozes) {
+bool Alarm::snoozePossible(int currentSnoozes) const {
 	return (currentSnoozes <= maxSnoozes_);
 };
 
@@ -39,7 +42,7 @@ void Alarm::turnOn() {
 	hasTriggered_ = false;
 }
 
-bool Alarm::shouldTrigger(const TimePoint currentTime, int currentSnoozes) {
+bool Alarm::shouldTrigger(const TimePoint& currentTime, int currentSnoozes) const {
 	// alarm must be active, not have rung or snoozable, and past the current time point
 	return isActive_ &&
 		   (!hasTriggered_ || snoozePossible(currentSnoozes)) &&
