@@ -6,17 +6,15 @@
 // stores alarms, gets/sets, returns next active alarm, can cancel alarm
 class AlarmManager {
 	private:
-		// all
+		// all: sorted by how many minutes until ring
 		std::vector<Alarm> alarms;
-		// sorted, insertion needs to maintain sort order
-		std::vector<Alarm> activeAlarms;
 		void makeActiveAlarms();
 		void removeAlarm(std::vector<Alarm>& alarmList, int alarmID);
 	public:
 		std::vector<Alarm> getAlarms();
 		std::vector<Alarm> getActiveAlarms();
 		void setAlarm(const Alarm& alarm, const TimePoint& now);
-		void getAlarmsFromStorage(const IStorage& storage);
+		void getAlarmsFromStorage(const IStorage& storage, TimePoint now);
 		Alarm* getNextActiveAlarm(const TimePoint& now);
 		void cancelAlarm(int alarmID);
 };

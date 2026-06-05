@@ -5,10 +5,6 @@ std::vector<Alarm> AlarmManager::AlarmManager::getAlarms() {
 	return alarms;
 }
 
-std::vector<Alarm> AlarmManager::getActiveAlarms() {
-	return activeAlarms;
-}
-
 void AlarmManager::setAlarm(const Alarm& alarm, const TimePoint& now) {
 	// insert in sorted order according to how many minutes until alarm rings
 	int minsUntilRing = alarm.getMinutesUntilRing(now);
@@ -22,26 +18,21 @@ void AlarmManager::setAlarm(const Alarm& alarm, const TimePoint& now) {
 	alarms.insert(it, alarm);
 }
 
-void AlarmManager::makeActiveAlarms() {
-	for (const auto& alarm : alarms) {
-		if (alarm.isActive()) {
-			activeAlarms.push_back(alarm);
-		}
-	}
-}
-
-void AlarmManager::getAlarmsFromStorage(const IStorage& storage) {
+void AlarmManager::getAlarmsFromStorage(const IStorage& storage, TimePoint now) {
 	std::vector<Alarm> loadedAlarms = storage.loadAlarms();
-	// replace
-	alarms = loadedAlarms;
-	// make active ones
-	makeActiveAlarms();
+	// clear and insert manuallly
+	alarms.clear();
+
+	for (const auto& alarm : loadedAlarms) {
+		setAlarm(alarm, now);
+	}
+
 }
 
 Alarm* AlarmManager::getNextActiveAlarm(const TimePoint& now) {
 	// first one in list
-	for (auto& alarm : activeAlarms) {
-		if (now < alarm.getTime()) {
+	for (auto& alarm : alarms) {
+		if (alarm.isActive()) {
 			return &alarm;
 		}
 	}
@@ -64,5 +55,4 @@ void AlarmManager::removeAlarm(std::vector<Alarm>& alarmList, int alarmID) {
 void AlarmManager::cancelAlarm(int alarmID) {
 	// normal list
 	removeAlarm(alarms, alarmID);
-	removeAlarm(activeAlarms, alarmID);
 }
