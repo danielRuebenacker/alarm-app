@@ -1,3 +1,4 @@
+#pragma once
 #include <ctime>
 #include "../types/TimePoint.h"
 #include "../types/DayMask.h"
