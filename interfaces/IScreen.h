@@ -1,3 +1,5 @@
+#pragma once
+
 class IScreen {
 	public:
 		virtual ~IScreen() = default;
