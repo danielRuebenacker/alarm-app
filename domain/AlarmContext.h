@@ -48,4 +48,5 @@ class AlarmContext {
           IInput& getInput();
           UIManager& getUI();
           AlarmManager& getAlarmManager();
+		  bool nextAlarmShouldTrigger(TimePoint now);
 };

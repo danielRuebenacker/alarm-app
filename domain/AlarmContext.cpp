@@ -57,3 +57,11 @@ UIManager& AlarmContext::getUI(){
 AlarmManager& AlarmContext::getAlarmManager(){
 	return *alarmManager_;
 }
+
+bool AlarmContext::nextAlarmShouldTrigger(TimePoint now) {
+	Alarm* nextAlarm = alarmManager_->getNextActiveAlarm(now);
+	// if doesn't exist, not alarms are set
+	if (!nextAlarm) return false;
+	if (nextAlarm->shouldTrigger(now)) return true;
+	return false;
+}
