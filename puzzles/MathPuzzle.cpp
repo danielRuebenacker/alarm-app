@@ -4,7 +4,8 @@
 
 class MathPuzzle : public IPuzzle {
 	private:
-		int answer;
+		int correctAnswer;
+		int userAnswer;
 	public:
 		MathPuzzle(Difficulty difficulty = EASY) {
 			// use random num generator or something
