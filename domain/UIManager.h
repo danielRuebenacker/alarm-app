@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "../interfaces/IScreen.h"
+#include "../interfaces/IPuzzle.h"
 
 class UIManager {
 	private:
@@ -14,4 +15,5 @@ class UIManager {
 		void registerScreen(std::string screenID, std::shared_ptr<IScreen> screen);
 		void loadScreen(std::string screenID);
 		void update();
+		void loadPuzzleWithWrapper(std::unique_ptr<IPuzzle> puzzle);
 };

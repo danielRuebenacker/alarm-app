@@ -18,3 +18,15 @@ void UIManager::loadScreen(std::string screenID) {
 	newScreen->load();
 	currentScreen = newScreen;
 }
+
+void UIManager::loadPuzzleWithWrapper(std::unique_ptr<IPuzzle> puzzle) {
+	// puzzle wrapper contains things like timer, time etc.
+	loadScreen("puzzleWrapper");
+	if (!currentScreen) return;
+
+	UIWidget* container = currentScreen->getContentContainer();
+
+	if (container && puzzle) {
+		puzzle->display(container);
+	}
+}
