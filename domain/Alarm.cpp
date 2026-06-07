@@ -4,7 +4,7 @@
 Alarm::Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask)
     : time_(time), isActive_(false), hasTriggered_(false),
       snoozeMinutes_(Alarm::DEFAULT_SNOOZE_TIME),
-      maxSnoozes_(Alarm::DEFAULT_SNOOZES), puzzleType_(puzzleType),
+      maxSnoozes_(Alarm::DEFAULT_SNOOZES), currentNoSnoozes(0), puzzleType_(puzzleType),
       dayMask_(dayMask) {
 		  id = nextId++;
 	  }
@@ -28,8 +28,8 @@ int Alarm::getMinutesUntilRing(const TimePoint& currentTime) const {
 	return (currentMins - time_.minutesSinceMidnight() + totalMins) % totalMins;
 }
 
-bool Alarm::snoozePossible(int currentSnoozes) const {
-	return (currentSnoozes <= maxSnoozes_);
+bool Alarm::snoozePossible() const {
+	return (currentNoSnoozes <= maxSnoozes_);
 };
 
 void Alarm::turnOff() {

@@ -15,6 +15,7 @@ class Alarm {
 		bool isActive_;
 		bool hasTriggered_;
 		int snoozeMinutes_;
+		int currentNoSnoozes;
 		int maxSnoozes_;
 		PuzzleType puzzleType_;
 		uint8_t dayMask_;
@@ -31,7 +32,7 @@ class Alarm {
 		bool isActive() const;
 
 		int getMinutesUntilRing(const TimePoint& currentTime) const;
-		bool snoozePossible(int currentSnoozes = 0) const;
+		bool snoozePossible() const;
 		void turnOff();
 		void turnOn();
 		bool shouldTrigger(const TimePoint& currentTime, int currentSnoozes = 0) const;
