@@ -2,7 +2,7 @@
 
 class MathPuzzle : public IPuzzle {
 	public:
-		void display() override {}
+		void display(UIWidget* wrapper) override {}
 
 		bool verifySolution() override { 
 			return true;
