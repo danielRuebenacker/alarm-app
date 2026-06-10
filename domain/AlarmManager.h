@@ -18,4 +18,5 @@ class AlarmManager {
 		void getAlarmsFromStorage(const IStorage& storage, TimePoint now);
 		Alarm* getNextActiveAlarm(const TimePoint& now);
 		void cancelAlarm(int alarmId);
+		void snoozeAlarm(Alarm& alarm);
 };

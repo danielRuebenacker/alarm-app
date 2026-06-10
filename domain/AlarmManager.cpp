@@ -63,3 +63,6 @@ Alarm* AlarmManager::getAlarm(int alarmId) {
 	return nullptr;
 }
 
+void AlarmManager::snoozeAlarm(Alarm& alarm) {
+	alarm.snooze();
+}
