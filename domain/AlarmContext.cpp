@@ -60,10 +60,38 @@ AlarmManager& AlarmContext::getAlarmManager(){
 	return *alarmManager_;
 }
 
-bool AlarmContext::nextAlarmShouldTrigger(TimePoint now) {
+void AlarmContext::checkAndOrTrigger(const TimePoint& now) {
 	Alarm* nextAlarm = alarmManager_->getNextActiveAlarm(now);
 	// if doesn't exist, not alarms are set
-	if (!nextAlarm) return false;
-	if (nextAlarm->shouldTrigger(now)) return true;
-	return false;
+	if (!nextAlarm) return;
+
+	if (nextAlarm->shouldTrigger(now)) {
+		sound_->ring();
+		ui_->loadScreen("ringing");
+	}
+}
+
+void AlarmContext::onUserSnoozePressed() {
+	sound_->stopRinging();
+
+	TimePoint now = clock_->now();
+	Alarm* nextAlarm = alarmManager_->getNextActiveAlarm(now);
+	if (!nextAlarm) return;
+
+	alarmManager_->snoozeAlarm(*nextAlarm);
+	ui_->loadScreen("home");
+}
+
+void AlarmContext::onUserDismissedPressed() {
+	TimePoint now = clock_->now();
+	Alarm* nextAlarm = alarmManager_->getNextActiveAlarm(now);
+	if (!nextAlarm) return;
+
+	this->currentPuzzle_ = puzzleFactory_->createPuzzle(nextAlarm->getPuzzleType());
+
+	ui_->loadPuzzleWithWrapper(std::move(this->currentPuzzle_));
+}
+
+void AlarmContext::onUserSubmitAnswer() {
+	if ()
 }
