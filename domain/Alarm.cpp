@@ -53,3 +53,10 @@ PuzzleType Alarm::getPuzzleType() const {
 	return puzzleType_;
 }
 
+bool Alarm::snooze() {
+	if (snoozePossible()) {
+		this->currentNoSnoozes += 1;
+		return true;
+	}
+	return false;
+}
