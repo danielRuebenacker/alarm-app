@@ -60,4 +60,6 @@ Alarm* AlarmManager::getAlarm(int alarmId) {
 	for (auto& alarm : alarms) {
 		if (alarm.getId() == alarmId) return &alarm;
 	}
+	return nullptr;
 }
+
