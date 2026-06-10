@@ -32,6 +32,7 @@ class Alarm {
 		bool isActive() const;
 
 		int getMinutesUntilRing(const TimePoint& currentTime) const;
+		PuzzleType getPuzzleType() const;
 		bool snoozePossible() const;
 		void turnOff();
 		void turnOn();

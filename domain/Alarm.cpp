@@ -48,3 +48,8 @@ bool Alarm::shouldTrigger(const TimePoint& currentTime, int currentSnoozes) cons
 		   (!hasTriggered_ || snoozePossible(currentSnoozes)) &&
 		   (currentTime.minutesSinceMidnight() >= time_.minutesSinceMidnight());
 }
+
+PuzzleType Alarm::getPuzzleType() const {
+	return puzzleType_;
+}
+
