@@ -3,6 +3,7 @@
 #include <vector>
 #include "./Alarm.h"
 #include "./UIManager.h"
+#include "PuzzleFactory.h"
 
 class ISound;
 class IClock;
@@ -16,20 +17,23 @@ class AlarmManager;
 class AlarmContext {
 	private:
 		std::unique_ptr<IAppState>	currentState_;
+		std::unique_ptr<IPuzzle> currentPuzzle_;
 		std::shared_ptr<ISound> 	sound_;
 		std::shared_ptr<IClock> 	clock_;
 		std::shared_ptr<IInput> 	input_;
 		std::shared_ptr<UIManager> 	ui_;
 		std::shared_ptr<AlarmManager> 	alarmManager_;
 		std::shared_ptr<IStorage> 	storage_;
+		std::shared_ptr<PuzzleFactory> 	puzzleFactory_;
 		std::vector<Alarm> 			alarms_;
 	public:
           AlarmContext(std::shared_ptr<ISound> sound,
                        std::shared_ptr<IClock> clock,
                        std::shared_ptr<IInput> input,
                        std::shared_ptr<UIManager> ui,
-                       std::shared_ptr<IStorage> storage_,
-                       std::shared_ptr<AlarmManager> alarmManager_);
+                       std::shared_ptr<IStorage> storage,
+                       std::shared_ptr<PuzzleFactory> puzzleFactory,
+                       std::shared_ptr<AlarmManager> alarmManager);
 
           ~AlarmContext() = default;
           // don't allow copying
@@ -48,5 +52,7 @@ class AlarmContext {
           IInput& getInput();
           UIManager& getUI();
           AlarmManager& getAlarmManager();
-		  bool nextAlarmShouldTrigger(TimePoint now);
+		  void checkAndOrTrigger(const TimePoint& now);
+		  void onUserSnoozePressed();
+		  void onUserDismissedPressed();
 };

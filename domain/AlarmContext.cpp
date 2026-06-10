@@ -14,8 +14,10 @@ AlarmContext::AlarmContext(std::shared_ptr<ISound> sound,
                            std::shared_ptr<IInput> input,
                            std::shared_ptr<UIManager> ui,
                            std::shared_ptr<IStorage> storage,
+                           std::shared_ptr<PuzzleFactory> puzzleFactory,
                            std::shared_ptr<AlarmManager> alarmManager)
-    : sound_(sound), clock_(clock), input_(input), ui_(ui), storage_(storage), alarmManager_(alarmManager) {}
+    : sound_(sound), clock_(clock), input_(input), ui_(ui), storage_(storage),
+      puzzleFactory_(puzzleFactory), alarmManager_(alarmManager) {}
 
 void AlarmContext::changeState(std::unique_ptr<IAppState> newState) {
 	if (newState) {
