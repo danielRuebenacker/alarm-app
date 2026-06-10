@@ -36,5 +36,6 @@ class Alarm {
 		bool snoozePossible() const;
 		void turnOff();
 		void turnOn();
+		bool shouldTrigger(const TimePoint& currentTime) const;
 		bool shouldTrigger(const TimePoint& currentTime, int currentSnoozes = 0) const;
 };

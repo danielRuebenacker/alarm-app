@@ -42,10 +42,10 @@ void Alarm::turnOn() {
 	hasTriggered_ = false;
 }
 
-bool Alarm::shouldTrigger(const TimePoint& currentTime, int currentSnoozes) const {
+bool Alarm::shouldTrigger(const TimePoint& currentTime) const {
 	// alarm must be active, not have rung or snoozable, and past the current time point
 	return isActive_ &&
-		   (!hasTriggered_ || snoozePossible(currentSnoozes)) &&
+		   (!hasTriggered_ || snoozePossible()) &&
 		   (currentTime.minutesSinceMidnight() >= time_.minutesSinceMidnight());
 }
 
