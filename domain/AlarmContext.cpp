@@ -98,5 +98,13 @@ void AlarmContext::onUserDismissedPressed() {
 }
 
 void AlarmContext::onUserSubmitAnswer() {
-	if ()
+	if (currentPuzzle_->verifySolution()) {
+		// alarm finished
+		ui_->loadScreen("home");
+		sound_->stopRinging();
+	} else {
+		// continue ringing & show puzzle screen
+		sound_->ring();
+		ui_->loadPuzzleWithWrapper(std::move(currentPuzzle_));
+	}
 }

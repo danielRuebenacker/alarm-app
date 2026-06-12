@@ -55,4 +55,5 @@ class AlarmContext {
 		  void checkAndOrTrigger();
 		  void onUserSnoozePressed();
 		  void onUserDismissedPressed();
+		  void onUserSubmitAnswer();
 };
