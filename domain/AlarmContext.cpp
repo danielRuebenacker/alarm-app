@@ -80,8 +80,11 @@ void AlarmContext::onUserSnoozePressed() {
 	Alarm* nextAlarm = alarmManager_->getNextActiveAlarm(now);
 	if (!nextAlarm) return;
 
-	alarmManager_->snoozeAlarm(*nextAlarm);
-	ui_->loadScreen("home");
+	if (alarmManager_->snoozeAlarm(*nextAlarm)) {
+		ui_->loadScreen("home");
+	} else {
+		// not possible, so grey out snooze button
+	}
 }
 
 void AlarmContext::onUserDismissedPressed() {
