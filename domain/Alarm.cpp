@@ -19,10 +19,10 @@ bool Alarm::isActive() const {
 	return isActive_;
 }
 
-int Alarm::getMinutesUntilRing(const TimePoint& currentTime) const {
+int Alarm::getMinutesUntilRing(const TimePoint& now) const {
 	if (!isActive_) return INT_MAX;
 
-	int currentMins = currentTime.minutesSinceMidnight();
+	int currentMins = now.minutesSinceMidnight();
 	// for now ignore daymask, just return until next day
 	int totalMins = TimePoint::DAY_MINUTES;
 	return (currentMins - time_.minutesSinceMidnight() + totalMins) % totalMins;
