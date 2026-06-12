@@ -52,7 +52,7 @@ class AlarmContext {
           IInput& getInput();
           UIManager& getUI();
           AlarmManager& getAlarmManager();
-		  void checkAndOrTrigger(const TimePoint& now);
+		  void checkAndOrTrigger();
 		  void onUserSnoozePressed();
 		  void onUserDismissedPressed();
 };

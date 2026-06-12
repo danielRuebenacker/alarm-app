@@ -60,7 +60,9 @@ AlarmManager& AlarmContext::getAlarmManager(){
 	return *alarmManager_;
 }
 
-void AlarmContext::checkAndOrTrigger(const TimePoint& now) {
+void AlarmContext::checkAndOrTrigger() {
+	// get time 
+	TimePoint now = clock_->now();
 	Alarm* nextAlarm = alarmManager_->getNextActiveAlarm(now);
 	// if doesn't exist, not alarms are set
 	if (!nextAlarm) return;
