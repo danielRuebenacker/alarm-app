@@ -94,7 +94,7 @@ void AlarmContext::onUserDismissedPressed() {
 
 	this->currentPuzzle_ = puzzleFactory_->createPuzzle(nextAlarm->getPuzzleType());
 
-	ui_->loadPuzzleWithWrapper(std::move(this->currentPuzzle_));
+	ui_->loadPuzzleWithWrapper(std::move(currentPuzzle_));
 }
 
 void AlarmContext::onUserSubmitAnswer() {
