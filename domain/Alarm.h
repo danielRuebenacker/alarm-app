@@ -1,7 +1,7 @@
 #pragma once
 #include "../types/TimePoint.h"
 #include "../types/PuzzleType.h"
-#include "../types/DayMask.h"
+#include "../types/Days.h"
 
 #include <atomic>
 

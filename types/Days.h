@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-enum class DayMask : uint8_t {
+enum class Days : uint8_t {
     Sunday    = 1 << 0, // 00000001
     Monday    = 1 << 1, // 00000010
     Tuesday   = 1 << 2, // 00000100
@@ -11,10 +11,10 @@ enum class DayMask : uint8_t {
     Saturday  = 1 << 6  // 01000000
 };
 
-inline DayMask operator|(DayMask lhs, DayMask rhs) {
-	return static_cast<DayMask>(static_cast<uint8_t>(lhs) | static_cast<uint8_t>(rhs));
+inline Days operator|(const Days lhs, const Days rhs) {
+	return static_cast<Days>(static_cast<uint8_t>(lhs) | static_cast<uint8_t>(rhs));
 }
 
-inline bool operator&(DayMask lhs, DayMask rhs) {
+inline bool operator&(const Days lhs, const Days rhs) {
 	return static_cast<uint8_t>(lhs) & static_cast<uint8_t>(rhs);
 }
