@@ -1,12 +1,13 @@
 #include "TimePoint.h"
 
-TimePoint::TimePoint(int hour, int min) {
+TimePoint::TimePoint(int hour, int min, int dayOfTheWeek) {
 	if (hour < 0 || hour > 23 || min < 0 || min > 59) {
 		throw std::invalid_argument("invalid time");
 	}
 
 	hour_ = hour;
 	min_ = min;
+	dayOfTheWeek_ = dayOfTheWeek; 
 }
 
 int TimePoint::minutesSinceMidnight() const {
