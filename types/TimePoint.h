@@ -15,5 +15,8 @@ class TimePoint {
 		int min_;
 		int dayOfTheWeek_;
 
+		bool validateHour(int hour);
+		bool validateMin(int min);
+		bool validateDay(int dayOfTheWeek);
 };
 bool operator<(const TimePoint& t1, const TimePoint& t2);
