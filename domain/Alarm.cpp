@@ -33,7 +33,10 @@ PuzzleType Alarm::getPuzzleType() const {
 
 // -----------------------------------------------
 
-int Alarm::getMinutesUntilRing(const TimePoint& now) const {
+int Alarm::getMinutesUntilRing(const IClock& clock) const {
+	TimePoint now = clock.now();
+	Days::Day currentDay = clock.getCurrentDay();
+
 	if (!isActive_) return INT_MAX;
 
 	int currentMins = now.minutesSinceMidnight();
@@ -46,7 +49,6 @@ int Alarm::getMinutesUntilRing(const TimePoint& now) const {
 		return (currentMins - time_.minutesSinceMidnight() + dayMins) % dayMins;
 	}
 
-	int currentDay = now.day();
 	int daysUntil = days_.daysUntilNextActive(currentDay);
 
 	// if alarm was today but has already passed
