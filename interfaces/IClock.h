@@ -1,5 +1,4 @@
 #pragma once
-#include <ctime>
 #include "../types/TimePoint.h"
 #include "../types/Days.h"
 
@@ -8,5 +7,5 @@ class IClock {
 	public:
 		virtual ~IClock() = default;
 		virtual TimePoint now() const = 0;
-		virtual Days getCurrentDay() const = 0;
+		virtual Days::Day getCurrentDay() const = 0;
 };
