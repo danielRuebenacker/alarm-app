@@ -1,10 +1,9 @@
 #include "TimePoint.h"
 #include <stdexcept>
 
-TimePoint::TimePoint(int hour, int min, int dayOfTheWeek) {
-	if (!(validateHour(hour) && validateMin(min) && validateDay(dayOfTheWeek))) {
-		throw std::invalid_argument("invalid time");
-	}
+TimePoint::TimePoint(int hour, int min, Days::Day dayOfTheWeek) {
+	if (!validateHour(hour)) throw std::invalid_argument("invalid hour");
+	if (!validateMin(min)) throw std::invalid_argument("invalid min");
 
 	hour_ = hour;
 	min_ = min;
@@ -27,13 +26,9 @@ bool operator<(const TimePoint& t1, const TimePoint& t2) {
 }
 
 bool TimePoint::validateHour(int hour) {
-	return 0 < hour && hour < 23;
+	return 0 <= hour && hour <= 23;
 }
 
 bool TimePoint::validateMin(int min) {
-	return 0 < min && min < 60;
-}
-
-bool TimePoint::validateDay(int dayOfTheWeek) {
-	return 0 < dayOfTheWeek && dayOfTheWeek < 7;
+	return 0 <= min && min < 60;
 }
