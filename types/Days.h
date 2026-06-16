@@ -1,29 +1,28 @@
 #pragma once
-#include <cstdint>
+#include <bitset>
+#include <iostream>
 
 // wrapper struct wraps day mask
 struct Days {
-	enum Mask : uint8_t {
-		Sunday    = 1 << 0, // 00000001
-		Monday    = 1 << 1, // 00000010
-		Tuesday   = 1 << 2, // 00000100
-		Wednesday = 1 << 3, // 00001000
-		Thursday  = 1 << 4, // 00010000
-		Friday    = 1 << 5, // 00100000
-		Saturday  = 1 << 6  // 01000000
+	enum Day : size_t {
+		Sunday,
+		Monday,
+		Tuesday,
+		Wednesday,
+		Thursday,
+		Friday,
+		Saturday,
+		Count
 	};
 
-	Mask value;
+private:
+	std::bitset<Count> mask;
 
-	Days(Mask v) : value(v) {}
+	void set(Day day)						{ mask.set(day); }
+	void flip(Day day)						{ mask.flip(day); }
+	bool isActive(Day day) const			{ return mask.test(day); }
 
-	int daysUntilNextActive(int currentDay) const;
-
-	Days operator|(const Days rhs) {
-		return static_cast<Mask>(value | rhs.value);
-	}
-
-	bool operator&(const Days rhs) {
-		return value & rhs.value;
-	}
+	bool hasAnyDays() const					{ return mask.any(); }
+	bool isEveryDay() const					{ return mask.all(); }
+	void clearAll()							{ mask.reset(); }
 };
