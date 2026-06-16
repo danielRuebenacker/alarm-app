@@ -38,12 +38,11 @@ int Alarm::getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay)
 
 	int currentMins = now.minutesSinceMidnight();
 	int alarmMins = time_.minutesSinceMidnight();
-
 	int dayMins = TimePoint::DAY_MINUTES;
 
 	// if the mask is empty, default's to next day
 	if (!days_.hasAnyDays()) {
-		return (currentMins - time_.minutesSinceMidnight() + dayMins) % dayMins;
+		return (alarmMins - currentMins + dayMins) % dayMins;
 	}
 
 	int daysUntil = days_.daysUntilNextActive(currentDay);
