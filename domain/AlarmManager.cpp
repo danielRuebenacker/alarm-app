@@ -5,26 +5,26 @@ std::vector<Alarm> AlarmManager::AlarmManager::getAlarms() {
 	return alarms;
 }
 
-void AlarmManager::setAlarm(const Alarm& alarm, const TimePoint& now) {
+void AlarmManager::setAlarm(const Alarm& alarm, const IClock& clock) {
 	// insert in sorted order according to how many minutes until alarm rings
-	int minsUntilRing = alarm.getMinutesUntilRing(now);
+	int minsUntilRing = alarm.getMinutesUntilRing(clock);
 
 	// need to find lowest index, s.t. alarm can be inserted i.e. minsToRing < next.getMinutesUntilRing
 	auto it = std::upper_bound(
 		alarms.begin(), alarms.end(), minsUntilRing,
-		[&now](int targetMinutes, const Alarm &existingAlarm) {
-		  return targetMinutes < existingAlarm.getMinutesUntilRing(now);
+		[&clock](int targetMinutes, const Alarm &existingAlarm) {
+		  return targetMinutes < existingAlarm.getMinutesUntilRing(clock);
 		});
 	alarms.insert(it, alarm);
 }
 
-void AlarmManager::getAlarmsFromStorage(const IStorage& storage, TimePoint now) {
+void AlarmManager::getAlarmsFromStorage(const IStorage& storage, const IClock& clock) {
 	std::vector<Alarm> loadedAlarms = storage.loadAlarms();
 	// clear and insert manuallly
 	alarms.clear();
 
 	for (const auto& alarm : loadedAlarms) {
-		setAlarm(alarm, now);
+		setAlarm(alarm, clock);
 	}
 
 }

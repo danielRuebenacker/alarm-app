@@ -29,7 +29,7 @@ void AlarmContext::setup() {
 	// initialise UI (delegate to UIManager), set idle state
 	changeState(std::make_unique<IdleState>());
 	// have alarm manager load alarms
-	alarmManager_->getAlarmsFromStorage(*storage_, clock_->now());
+	alarmManager_->getAlarmsFromStorage(*storage_, *clock_);
 	// go to home screen
 	ui_->loadScreen("home");
 }

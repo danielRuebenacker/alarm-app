@@ -2,6 +2,7 @@
 #include <vector>
 #include "./Alarm.h"
 #include "../interfaces/IStorage.h"
+#include "../interfaces/IClock.h"
 
 // stores alarms, gets/sets, returns next active alarm, can cancel alarm
 class AlarmManager {
@@ -14,8 +15,8 @@ class AlarmManager {
 		std::vector<Alarm> getAlarms();
 		Alarm* getAlarm(int alarmId);
 		std::vector<Alarm> getActiveAlarms();
-		void setAlarm(const Alarm& alarm, const TimePoint& now);
-		void getAlarmsFromStorage(const IStorage& storage, TimePoint now);
+		void setAlarm(const Alarm& alarm, const IClock& clock);
+		void getAlarmsFromStorage(const IStorage& storage, const IClock& clock);
 		Alarm* getNextActiveAlarm(const TimePoint& now);
 		void cancelAlarm(int alarmId);
 		bool snoozeAlarm(Alarm& alarm);
