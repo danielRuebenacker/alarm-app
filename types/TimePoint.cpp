@@ -1,4 +1,5 @@
 #include "TimePoint.h"
+#include <stdexcept>
 
 TimePoint::TimePoint(int hour, int min, int dayOfTheWeek) {
 	if (!(validateHour(hour) && validateMin(min) && validateDay(dayOfTheWeek))) {
