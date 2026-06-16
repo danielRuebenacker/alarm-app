@@ -18,7 +18,7 @@ class Alarm {
 		int currentNoSnoozes;
 		int maxSnoozes_;
 		PuzzleType puzzleType_;
-		Days dayMask_;
+		Days days_;
 
 		// static
 		static constexpr int DEFAULT_SNOOZES = 3;
