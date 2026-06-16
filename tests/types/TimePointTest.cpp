@@ -29,6 +29,14 @@ TEST_CASE("Test constructor argument validation") {
 	SUBCASE("Check invalid min throws invalid_argument exception") {
 		CHECK_THROWS_AS(TimePoint tp(9, 65, Days::Sunday), std::invalid_argument);
 	}
+
+	SUBCASE("Check invalid hour and min throw invalid_argument exception") {
+		CHECK_THROWS_AS(TimePoint tp(24, 65, Days::Sunday), std::invalid_argument);
+	}
+
+	SUBCASE("Check invalid_argument exception thrown on negative numbers") {
+		CHECK_THROWS_AS(TimePoint tp(-1, 55, Days::Sunday), std::invalid_argument);
+	}
 }
 
 // TEST_CASE("Test minutesSinceMidnight method") {
