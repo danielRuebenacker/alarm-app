@@ -1,13 +1,12 @@
 #include "TimePoint.h"
 #include <stdexcept>
 
-TimePoint::TimePoint(int hour, int min, Days::Day dayOfTheWeek) {
+TimePoint::TimePoint(int hour, int min) {
 	if (!validateHour(hour)) throw std::invalid_argument("invalid hour");
 	if (!validateMin(min)) throw std::invalid_argument("invalid min");
 
 	hour_ = hour;
 	min_ = min;
-	dayOfTheWeek_ = dayOfTheWeek; 
 }
 
 int TimePoint::minutesSinceMidnight() const {
@@ -16,7 +15,6 @@ int TimePoint::minutesSinceMidnight() const {
 
 int TimePoint::hour() const { return hour_; }
 int TimePoint::min() const { return min_; }
-int TimePoint::day() const { return dayOfTheWeek_; }
 
 bool operator<(const TimePoint& t1, const TimePoint& t2) {
 	if (t1.hour() != t2.hour()) {
