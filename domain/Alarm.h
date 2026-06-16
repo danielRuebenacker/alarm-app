@@ -26,12 +26,16 @@ class Alarm {
 
 	public:
 		Alarm(TimePoint time, PuzzleType puzzleType, Days days);
+		// getters
 		int getId() const;
 		TimePoint getTime() const;
 		bool isActive() const;
-
-		int getMinutesUntilRing(const TimePoint& now) const;
 		PuzzleType getPuzzleType() const;
+		int getCurrentNoSnoozes() const;
+		Days getDays() const;
+
+		// logic
+		int getMinutesUntilRing(const TimePoint& now) const;
 		bool snoozePossible() const;
 		void turnOff();
 		void turnOn();

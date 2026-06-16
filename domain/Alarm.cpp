@@ -8,7 +8,7 @@ Alarm::Alarm(TimePoint time, PuzzleType puzzleType, Days days)
       days_(days) {
 		  id = nextId++;
 	  }
-
+// -------------- getters -------------------
 int Alarm::getId() const { return id; }
 
 TimePoint Alarm::getTime() const {
@@ -18,6 +18,20 @@ TimePoint Alarm::getTime() const {
 bool Alarm::isActive() const {
 	return isActive_;
 }
+
+int Alarm::getCurrentNoSnoozes() const {
+	return currentNoSnoozes;
+}
+
+Days Alarm::getDays() const {
+	return days_;
+}
+
+PuzzleType Alarm::getPuzzleType() const {
+	return puzzleType_;
+}
+
+// -----------------------------------------------
 
 int Alarm::getMinutesUntilRing(const TimePoint& now) const {
 	if (!isActive_) return INT_MAX;
@@ -65,10 +79,6 @@ bool Alarm::shouldTrigger(const TimePoint& currentTime) const {
 	return isActive_ &&
 		   (!hasTriggered_ || snoozePossible()) &&
 		   (currentTime.minutesSinceMidnight() >= time_.minutesSinceMidnight());
-}
-
-PuzzleType Alarm::getPuzzleType() const {
-	return puzzleType_;
 }
 
 bool Alarm::snooze() {
