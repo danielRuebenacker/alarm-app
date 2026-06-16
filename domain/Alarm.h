@@ -8,7 +8,7 @@
 class Alarm {
 	private:
 		// id
-		static std::atomic<int> nextId;
+		inline static std::atomic<int> nextId;
 		int id;
 
 		TimePoint time_;
