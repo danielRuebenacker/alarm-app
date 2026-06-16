@@ -29,3 +29,29 @@ TEST_CASE("Test daysUntilNextActive function") {
 		CHECK(days.daysUntilNextActive(Days::Sunday) == 1);
 	}
 }
+
+TEST_CASE("Test clearAll") {
+	Days days;
+
+	SUBCASE("Test clear all on no days (should do nothing)") {
+		days.clearAll();
+		CHECK(days.hasAnyDays() == false);
+	}
+
+	SUBCASE("Test clearAll on single day clears that day") {
+		days.set(Days::Sunday);
+
+		days.clearAll();
+		CHECK(days.hasAnyDays() == false);
+	}
+
+	SUBCASE("Test clearAll on a set of days clears") {
+		days.set(Days::Sunday);
+		days.set(Days::Monday);
+		days.set(Days::Tuesday);
+		days.set(Days::Wednesday);
+
+		days.clearAll();
+		CHECK(days.hasAnyDays() == false);
+	}
+}
