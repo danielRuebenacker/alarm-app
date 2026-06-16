@@ -3,7 +3,8 @@
 #include <iostream>
 
 // wrapper struct wraps day mask
-struct Days {
+class Days {
+public:
 	enum Day : size_t {
 		Sunday,
 		Monday,
@@ -15,14 +16,16 @@ struct Days {
 		Count
 	};
 
+	Days() = default;
+
+	void set(Day day)						{ mask_.set(day); }
+	void flip(Day day)						{ mask_.flip(day); }
+	bool isActive(Day day) const			{ return mask_.test(day); }
+
+	bool hasAnyDays() const					{ return mask_.any(); }
+	bool isEveryDay() const					{ return mask_.all(); }
+	void clearAll()							{ mask_.reset(); }
+
 private:
-	std::bitset<Count> mask;
-
-	void set(Day day)						{ mask.set(day); }
-	void flip(Day day)						{ mask.flip(day); }
-	bool isActive(Day day) const			{ return mask.test(day); }
-
-	bool hasAnyDays() const					{ return mask.any(); }
-	bool isEveryDay() const					{ return mask.all(); }
-	void clearAll()							{ mask.reset(); }
+	std::bitset<Count> mask_;
 };
