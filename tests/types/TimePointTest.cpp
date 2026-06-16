@@ -52,4 +52,9 @@ TEST_CASE("Test minutesSinceMidnight method") {
 		TimePoint tp(23, 59);
 		CHECK(tp.minutesSinceMidnight() == TimePoint::DAY_MINUTES - 1);
 	}
+
+	SUBCASE("Check minutesSinceMidnight for 8:30 equals 510") {
+		TimePoint tp(8, 30);
+		CHECK(tp.minutesSinceMidnight() == 510);
+	}
 }
