@@ -1,6 +1,5 @@
 #pragma once
 #include <bitset>
-#include <iostream>
 
 // wrapper struct wraps day mask
 class Days {
