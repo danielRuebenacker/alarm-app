@@ -1,8 +1,7 @@
 # Building and Testing
 ```
 rm -rf build                            // optionally clear cached
-cmake --build
-cd build && ctest
+cmake --build build && ./build/tests/run_project_tests
 ```
 
 # More advances flags for testing
