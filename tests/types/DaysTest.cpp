@@ -1,6 +1,6 @@
 #include "../doctest.h"
 
-#include "types/Days.h"
+#include "src/types/Days.h"
 
 TEST_CASE("Test days bitmask (basic)") {
 	Days days;

@@ -1,8 +1,7 @@
 #include "../doctest.h"
 #include <stdexcept>
 
-#include "types/TimePoint.h"
-#include "types/Days.h"
+#include "src/types/TimePoint.h"
 
 TEST_CASE("Test basic constructor and hour, min, day methods") {
 	SUBCASE("Test timepoint for: Sunday 0:30") { 

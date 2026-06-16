@@ -6,13 +6,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(PROJECT_SOURCES
-	domain/AlarmContext.cpp
-	domain/Alarm.cpp
-	domain/AlarmManager.cpp
-	domain/UIManager.cpp
-	puzzles/MathPuzzle.cpp
-	types/Days.cpp
-	types/TimePoint.cpp
+	src/domain/AlarmContext.cpp
+	src/domain/Alarm.cpp
+	src/domain/AlarmManager.cpp
+	src/domain/UIManager.cpp
+	src/puzzles/MathPuzzle.cpp
+	src/types/Days.cpp
+	src/types/TimePoint.cpp
 )
 
 add_library(AlarmClockLib STATIC ${PROJECT_SOURCES})
