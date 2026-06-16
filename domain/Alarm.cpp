@@ -33,10 +33,7 @@ PuzzleType Alarm::getPuzzleType() const {
 
 // -----------------------------------------------
 
-int Alarm::getMinutesUntilRing(const IClock& clock) const {
-	TimePoint now = clock.now();
-	Days::Day currentDay = clock.getCurrentDay();
-
+int Alarm::getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay) const {
 	if (!isActive_) return INT_MAX;
 
 	int currentMins = now.minutesSinceMidnight();

@@ -10,13 +10,13 @@ std::vector<Alarm> AlarmManager::AlarmManager::getAlarms() {
 
 void AlarmManager::setAlarm(const Alarm& alarm) {
 	// insert in sorted order according to how many minutes until alarm rings
-	int minsUntilRing = alarm.getMinutesUntilRing(*clock_);
+	int minsUntilRing = alarm.getMinutesUntilRing(clock_->now(), clock_->getCurrentDay());
 
 	// need to find lowest index, s.t. alarm can be inserted i.e. minsToRing < next.getMinutesUntilRing
 	auto it = std::upper_bound(
 		alarms.begin(), alarms.end(), minsUntilRing,
 		[this](int targetMinutes, const Alarm &existingAlarm) {
-		  return targetMinutes < existingAlarm.getMinutesUntilRing(*clock_);
+		  return targetMinutes < existingAlarm.getMinutesUntilRing(clock_->now(), clock_->getCurrentDay());
 		});
 	alarms.insert(it, alarm);
 }

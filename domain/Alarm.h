@@ -2,7 +2,6 @@
 #include "../types/TimePoint.h"
 #include "../types/PuzzleType.h"
 #include "../types/Days.h"
-#include "interfaces/IClock.h"
 
 #include <atomic>
 
@@ -36,7 +35,7 @@ class Alarm {
 		Days getDays() const;
 
 		// logic
-		int getMinutesUntilRing(const IClock& clock) const;
+		int getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay) const;
 		bool snoozePossible() const;
 		void turnOff();
 		void turnOn();
