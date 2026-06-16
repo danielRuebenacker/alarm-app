@@ -5,7 +5,7 @@ Alarm::Alarm(TimePoint time, PuzzleType puzzleType, Days days)
     : time_(time), isActive_(false), hasTriggered_(false),
       snoozeMinutes_(Alarm::DEFAULT_SNOOZE_TIME),
       maxSnoozes_(Alarm::DEFAULT_SNOOZES), currentNoSnoozes(0), puzzleType_(puzzleType),
-      dayMask_(days) {
+      days_(days) {
 		  id = nextId++;
 	  }
 
@@ -23,9 +23,27 @@ int Alarm::getMinutesUntilRing(const TimePoint& now) const {
 	if (!isActive_) return INT_MAX;
 
 	int currentMins = now.minutesSinceMidnight();
-	// for now ignore daymask, just return until next day
-	int totalMins = TimePoint::DAY_MINUTES;
-	return (currentMins - time_.minutesSinceMidnight() + totalMins) % totalMins;
+	int alarmMins = time_.minutesSinceMidnight();
+
+	int dayMins = TimePoint::DAY_MINUTES;
+
+	// if the mask is empty, default's to next day
+	if (!days_.hasAnyDays()) {
+		return (currentMins - time_.minutesSinceMidnight() + dayMins) % dayMins;
+	}
+
+	int currentDay = now.day();
+	int daysUntil = days_.daysUntilNextActive(currentDay);
+
+	// if alarm was today but has already passed
+	if (daysUntil == 0 && currentMins >= alarmMins) {
+		// move along
+		int tomorrow = (currentDay + 1) % Days::Count;
+		// add 1 to compensate for starting from tomorrow
+		daysUntil = days_.daysUntilNextActive(tomorrow) + 1;
+	}
+
+	return (daysUntil * dayMins) + (alarmMins - currentMins);
 }
 
 bool Alarm::snoozePossible() const {
