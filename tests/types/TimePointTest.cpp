@@ -39,8 +39,19 @@ TEST_CASE("Test constructor argument validation") {
 	}
 }
 
-// TEST_CASE("Test minutesSinceMidnight method") {
-// 	SUBCASE("Check minutes since midnight for midnight time is 0") {
-//
-// 	}
-// }
+TEST_CASE("Test minutesSinceMidnight method") {
+	SUBCASE("Check minutes since midnight for midnight time is 0") {
+		TimePoint tp(0, 0, Days::Sunday);
+		CHECK(tp.minutesSinceMidnight() == 0);
+	}
+
+	SUBCASE("Check minutes since midnight for midday time is 12 * 60 = 720") {
+		TimePoint tp(12, 0, Days::Sunday);
+		CHECK(tp.minutesSinceMidnight() == 720);
+	}
+
+	SUBCASE("Check minutesSinceMidnight one min before midnigh") {
+		TimePoint tp(23, 59, Days::Sunday);
+		CHECK(tp.minutesSinceMidnight() == TimePoint::DAY_MINUTES - 1);
+	}
+}
