@@ -1,18 +1,12 @@
 #include "Days.h"
 
 int Days::daysUntilNextActive(int currentDay) const {
-	// current day is just index e.g. 0 = Sunday, 1 = Monday, ...
-	
-	// loop through, checking each day starting from today
-	for (int i = 0; i < 7; i++) {
-		int nextDayIndex = (currentDay + i) % 7;
+	for (int offset = 0; offset < Count; offset++) {
+		int dayToCheck = (currentDay + offset) % Count;
 
-		Mask nextDayMask = static_cast<Mask>(1 << nextDayIndex);
-
-		if (this->value & nextDayMask) {
-			return i;
-		}
+		if (mask_.test(dayToCheck)) return offset;
 	}
-	// not found
+
+	// no days
 	return -1;
 }

@@ -26,6 +26,8 @@ public:
 	bool isEveryDay() const					{ return mask_.all(); }
 	void clearAll()							{ mask_.reset(); }
 
+	int daysUntilNextActive(int currentDay) const;
+
 private:
 	std::bitset<Count> mask_;
 };
