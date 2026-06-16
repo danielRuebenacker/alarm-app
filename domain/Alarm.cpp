@@ -1,7 +1,7 @@
 #include "Alarm.h"
 #include <climits>
 
-Alarm::Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask)
+Alarm::Alarm(TimePoint time, PuzzleType puzzleType, Days days)
     : time_(time), isActive_(false), hasTriggered_(false),
       snoozeMinutes_(Alarm::DEFAULT_SNOOZE_TIME),
       maxSnoozes_(Alarm::DEFAULT_SNOOZES), currentNoSnoozes(0), puzzleType_(puzzleType),

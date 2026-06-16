@@ -18,15 +18,14 @@ class Alarm {
 		int currentNoSnoozes;
 		int maxSnoozes_;
 		PuzzleType puzzleType_;
-		uint8_t dayMask_;
+		Days dayMask_;
 
 		// static
 		static constexpr int DEFAULT_SNOOZES = 3;
 		static constexpr int DEFAULT_SNOOZE_TIME = 5;
 
 	public:
-		// by default doesn't repeat on days
-		Alarm(TimePoint time, PuzzleType puzzleType, uint8_t dayMask = 0);
+		Alarm(TimePoint time, PuzzleType puzzleType, Days days);
 		int getId() const;
 		TimePoint getTime() const;
 		bool isActive() const;
