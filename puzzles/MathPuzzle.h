@@ -1,3 +1,4 @@
+#pragma once
 #include "../interfaces/IPuzzle.h"
 
 class MathPuzzle : public IPuzzle {

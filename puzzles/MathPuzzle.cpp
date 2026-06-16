@@ -1,4 +1,3 @@
-#pragma once
 #include "../interfaces/IPuzzle.h"
 #include "../types/Difficulty.h"
 
