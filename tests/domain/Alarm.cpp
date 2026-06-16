@@ -21,6 +21,10 @@ TEST_CASE("Test alarm construction") {
 	SUBCASE("Check puzzletype of initialised alarm is correct") {
 		CHECK(alarm.getPuzzleType() == PuzzleType::MATHS);
 	}
+
+	SUBCASE("Check the alarm is inactive") {
+		CHECK(alarm.isActive() == false);
+	}
 }
 
 TEST_CASE("Test two different alarms produce two different IDs") {
@@ -31,7 +35,7 @@ TEST_CASE("Test two different alarms produce two different IDs") {
 	REQUIRE(alarm1.getId() != alarm2.getId());
 }
 
-TEST_CASE("Test getMinutesUntilRing method") {
+TEST_CASE("Test getMinutesUntilRing method with basic alarm with empty days schedule") {
 	Alarm alarm = createMockAlarm(8, 30);
 	
 	SUBCASE("Test inactive alarm getMinutesUntilRing returns INT_MAX") {
@@ -40,7 +44,19 @@ TEST_CASE("Test getMinutesUntilRing method") {
 		CHECK(alarm.getMinutesUntilRing(t, Days::Friday) == INT_MAX);
 	}
 
-	// SUBCASE("Test from midnight to 8:30 is 8 * 60 + 30 = 510 minutes") {
-	//
-	// }
+	SUBCASE("Test from midnight to 8:30 is 8 * 60 + 30 = 510 minutes") {
+		TimePoint t(0, 0);
+		// make sure to active the alarm!!
+		alarm.turnOn();
+		// again random day (since day mask is 0 shouldn't matter)
+		CHECK(alarm.getMinutesUntilRing(t, Days::Sunday) == 510);
+	}
+
+	SUBCASE("Test from 8:31 to 8:30 should be DAY_MINUTES - 1") {
+		TimePoint t(8, 31);
+		// make sure to active the alarm!!
+		alarm.turnOn();
+		// again random day (since day mask is 0 shouldn't matter)
+		CHECK(alarm.getMinutesUntilRing(t, Days::Sunday) == TimePoint::DAY_MINUTES - 1);
+	}
 }
