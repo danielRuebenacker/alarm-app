@@ -1,5 +1,6 @@
 #pragma once
 #include <bitset>
+#include <initializer_list>
 
 // wrapper struct wraps day mask
 class Days {
@@ -16,6 +17,12 @@ public:
 	};
 
 	Days() = default;
+
+	Days(std::initializer_list<Day> days) {
+		for (Day d : days) {
+			mask_.set(d);
+		}
+	}
 
 	void set(Day day)						{ mask_.set(day); }
 	void flip(Day day)						{ mask_.flip(day); }
