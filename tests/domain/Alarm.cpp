@@ -44,19 +44,45 @@ TEST_CASE("Test getMinutesUntilRing method with basic alarm with empty days sche
 		CHECK(alarm.getMinutesUntilRing(t, Days::Friday) == INT_MAX);
 	}
 
-	SUBCASE("Test from midnight to 8:30 is 8 * 60 + 30 = 510 minutes") {
+	SUBCASE("Test from midnight to 8:30") {
+		constexpr int expectedMinutes = 8*60 + 30;
 		TimePoint t(0, 0);
 		// make sure to active the alarm!!
 		alarm.turnOn();
 		// again random day (since day mask is 0 shouldn't matter)
-		CHECK(alarm.getMinutesUntilRing(t, Days::Sunday) == 510);
+		CHECK(alarm.getMinutesUntilRing(t, Days::Sunday) == expectedMinutes);
 	}
 
 	SUBCASE("Test from 8:31 to 8:30 should be DAY_MINUTES - 1") {
+		constexpr int expectedMinutes = TimePoint::DAY_MINUTES - 1;
 		TimePoint t(8, 31);
 		// make sure to active the alarm!!
 		alarm.turnOn();
 		// again random day (since day mask is 0 shouldn't matter)
-		CHECK(alarm.getMinutesUntilRing(t, Days::Sunday) == TimePoint::DAY_MINUTES - 1);
+		CHECK(alarm.getMinutesUntilRing(t, Days::Sunday) == expectedMinutes);
+	}
+}
+
+TEST_CASE("Test getMinutesUntilRing method with proper Days schedule") {
+	Alarm alarm = createMockAlarm(12, 30);
+	// set some days and add to alarm
+	Days days =  { Days::Monday, Days::Friday };
+	alarm.setDays(days);
+	// activate!!
+	alarm.turnOn();
+
+	SUBCASE("Test inactive alarm with days mask") {
+		// random timepoint/day
+		TimePoint t(0, 0);
+		// deactivate alarm for this test
+		alarm.turnOff();
+		CHECK(alarm.getMinutesUntilRing(t, Days::Sunday) == INT_MAX);
+	}
+
+	SUBCASE("Test getMinutesUntilRing when today is Wednesday 0:00") {
+		// so Wednesday to Friday + 12:30
+		constexpr int expectedMinutes = 12 * 60 + 30 + 2 * 24 * 60;
+		TimePoint t(0, 0);
+		CHECK(alarm.getMinutesUntilRing(t, Days::Wednesday) == expectedMinutes);
 	}
 }
