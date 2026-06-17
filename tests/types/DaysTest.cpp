@@ -28,6 +28,11 @@ TEST_CASE("Test daysUntilNextActive function") {
 		days.set(Days::Monday);
 		CHECK(days.daysUntilNextActive(Days::Sunday) == 1);
 	}
+
+	SUBCASE("Check days from Wednesday to Friday is 2") {
+		days.set(Days::Friday);
+		CHECK(days.daysUntilNextActive(Days::Wednesday) == 2);
+	}
 }
 
 TEST_CASE("Test clearAll") {
