@@ -33,6 +33,11 @@ PuzzleType Alarm::getPuzzleType() const {
 
 // -----------------------------------------------
 
+// setters
+void Alarm::setDays(const Days& days) {
+	this->days_ = days;
+}
+
 int Alarm::getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay) const {
 	if (!isActive_) return INT_MAX;
 

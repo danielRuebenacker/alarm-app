@@ -34,6 +34,9 @@ class Alarm {
 		int getCurrentNoSnoozes() const;
 		Days getDays() const;
 
+		// setters
+		void setDays(const Days& days);
+
 		// logic
 		int getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay) const;
 		bool snoozePossible() const;
