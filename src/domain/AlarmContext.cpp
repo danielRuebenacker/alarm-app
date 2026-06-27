@@ -1,5 +1,4 @@
 #include "AlarmContext.h"
-#include "UIManager.h"
 #include "AlarmManager.h"
 
 #include "../appStates/IdleState.h"
@@ -12,11 +11,10 @@
 AlarmContext::AlarmContext(std::shared_ptr<ISound> sound,
                            std::shared_ptr<IClock> clock,
                            std::shared_ptr<IInput> input,
-                           std::shared_ptr<UIManager> ui,
                            std::shared_ptr<IStorage> storage,
                            std::shared_ptr<PuzzleFactory> puzzleFactory,
                            std::shared_ptr<AlarmManager> alarmManager)
-    : sound_(sound), clock_(clock), input_(input), ui_(ui), storage_(storage),
+    : sound_(sound), clock_(clock), input_(input), storage_(storage),
       puzzleFactory_(puzzleFactory), alarmManager_(alarmManager) {}
 
 void AlarmContext::changeState(std::unique_ptr<IAppState> newState) {
@@ -26,16 +24,12 @@ void AlarmContext::changeState(std::unique_ptr<IAppState> newState) {
 }
 
 void AlarmContext::setup() {
-	// initialise UI (delegate to UIManager), set idle state
 	changeState(std::make_unique<IdleState>());
 	// have alarm manager load alarms
 	alarmManager_->getAlarmsFromStorage();
-	// go to home screen
-	ui_->loadScreen("home");
 }
 
 void AlarmContext::update() {
-	ui_->update();
 	currentState_->update(this);
 }
 
@@ -52,10 +46,6 @@ IInput& AlarmContext::getInput(){
 	return *input_;
 }
 
-UIManager& AlarmContext::getUI(){
-	return *ui_;
-}
-
 AlarmManager& AlarmContext::getAlarmManager(){
 	return *alarmManager_;
 }
@@ -69,42 +59,5 @@ void AlarmContext::checkAndOrTrigger() {
 
 	if (nextAlarm->shouldTrigger(now)) {
 		sound_->ring();
-		ui_->loadScreen("ringing");
-	}
-}
-
-void AlarmContext::onUserSnoozePressed() {
-	sound_->stopRinging();
-
-	TimePoint now = clock_->now();
-	Alarm* nextAlarm = alarmManager_->getNextActiveAlarm(now);
-	if (!nextAlarm) return;
-
-	if (alarmManager_->snoozeAlarm(*nextAlarm)) {
-		ui_->loadScreen("home");
-	} else {
-		// not possible, so grey out snooze button
-	}
-}
-
-void AlarmContext::onUserDismissedPressed() {
-	TimePoint now = clock_->now();
-	Alarm* nextAlarm = alarmManager_->getNextActiveAlarm(now);
-	if (!nextAlarm) return;
-
-	this->currentPuzzle_ = puzzleFactory_->createPuzzle(nextAlarm->getPuzzleType());
-
-	ui_->loadPuzzleWithWrapper(std::move(currentPuzzle_));
-}
-
-void AlarmContext::onUserSubmitAnswer() {
-	if (currentPuzzle_->verifySolution()) {
-		// alarm finished
-		ui_->loadScreen("home");
-		sound_->stopRinging();
-	} else {
-		// continue ringing & show puzzle screen
-		sound_->ring();
-		ui_->loadPuzzleWithWrapper(std::move(currentPuzzle_));
 	}
 }

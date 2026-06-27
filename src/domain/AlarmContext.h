@@ -21,7 +21,6 @@ class AlarmContext {
 		std::shared_ptr<ISound> 	sound_;
 		std::shared_ptr<IClock> 	clock_;
 		std::shared_ptr<IInput> 	input_;
-		std::shared_ptr<UIManager> 	ui_;
 		std::shared_ptr<AlarmManager> 	alarmManager_;
 		std::shared_ptr<IStorage> 	storage_;
 		std::shared_ptr<PuzzleFactory> 	puzzleFactory_;
@@ -30,7 +29,6 @@ class AlarmContext {
           AlarmContext(std::shared_ptr<ISound> sound,
                        std::shared_ptr<IClock> clock,
                        std::shared_ptr<IInput> input,
-                       std::shared_ptr<UIManager> ui,
                        std::shared_ptr<IStorage> storage,
                        std::shared_ptr<PuzzleFactory> puzzleFactory,
                        std::shared_ptr<AlarmManager> alarmManager);
@@ -50,10 +48,6 @@ class AlarmContext {
           IClock& getClock();
           ISound& getSound();
           IInput& getInput();
-          UIManager& getUI();
           AlarmManager& getAlarmManager();
 		  void checkAndOrTrigger();
-		  void onUserSnoozePressed();
-		  void onUserDismissedPressed();
-		  void onUserSubmitAnswer();
 };
