@@ -42,21 +42,23 @@ Alarm* AlarmManager::getNextActiveAlarm(const TimePoint& now) {
 	return nullptr;
 }
 
-void AlarmManager::removeAlarm(std::vector<Alarm>& alarmList, int alarmId) {
-	auto it = alarmList.begin();
-	while (it != alarmList.end()) {
+void AlarmManager::dismissAlarm(int alarmId) {
+	Alarm* alarm = getAlarm(alarmId);
+	if (!alarm) return;
+	alarm->turnOff();
+}
+
+void AlarmManager::deleteAlarm(int alarmId) {
+	auto it = alarms.begin();
+	while (it != alarms.end()) {
 		if (it->getId() == alarmId) {
-			it = alarmList.erase(it);
+			it = alarms.erase(it);
 			// since id unique
 			break;
 		} else {
 			++it;
 		}
 	}
-}
-
-void AlarmManager::cancelAlarm(int alarmId) {
-	removeAlarm(alarms, alarmId);
 }
 
 Alarm* AlarmManager::getAlarm(int alarmId) {
