@@ -10,7 +10,7 @@ set(PROJECT_SOURCES
 	src/domain/Alarm.cpp
 	src/domain/AlarmManager.cpp
 	src/domain/UIManager.cpp
-	src/puzzles/MathPuzzle.cpp
+	src/puzzles/MathPuzzle.h
 	src/types/Days.cpp
 	src/types/TimePoint.cpp
 )
