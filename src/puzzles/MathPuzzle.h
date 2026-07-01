@@ -27,9 +27,50 @@ class EasyMathPuzzle : public MathPuzzle {
 		RandomNumberGenerator& rd_;
 
 	public:
-		void display(UIWidget* wrapper) override {}
+		EasyMathPuzzle(RandomNumberGenerator& rd) : rd_(rd) {
+			x = rd_.generateRandomNumber(1, 100);
+			y = rd_.generateRandomNumber(1, 100);
+			z = rd_.generateRandomNumber(1, 100);
+			correctAnswer = x + y + z;
+		}
 
-		bool verifySolution() override { 
-			return true;
+		std::string toString() const override {
+			return std::to_string(x) + " + " + std::to_string(y) + " + " + std::to_string(z);
+		}
+};
+
+class MediumMathPuzzle : public MathPuzzle {
+	private:
+		int x, y, z;
+		RandomNumberGenerator& rd_;
+
+	public:
+		MediumMathPuzzle(RandomNumberGenerator& rd) : rd_(rd) {
+			x = rd_.generateRandomNumber(1, 100);
+			y = rd_.generateRandomNumber(1, 10);
+			z = rd_.generateRandomNumber(1, 100);
+			correctAnswer = x + y * z;
+		}
+
+		std::string toString() const override {
+			return std::to_string(x) + " + " + std::to_string(y) + " * " + std::to_string(z);
+		}
+};
+
+class HardMathPuzzle : public MathPuzzle {
+	private:
+		int x, y, z;
+		RandomNumberGenerator& rd_;
+
+	public:
+		HardMathPuzzle(RandomNumberGenerator& rd) : rd_(rd) {
+			x = rd_.generateRandomNumber(1, 15);
+			y = rd_.generateRandomNumber(1, 100);
+			z = rd_.generateRandomNumber(1, 100);
+			correctAnswer = std::pow(x, 2) - y + z;
+		}
+
+		std::string toString() const override {
+			return std::to_string(x) + "^2 - " + std::to_string(y) + " + " + std::to_string(z);
 		}
 };
