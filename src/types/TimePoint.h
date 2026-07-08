@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class TimePoint {
 	public:
@@ -7,6 +8,7 @@ class TimePoint {
 		int hour() const;
 		int min() const;
 		static constexpr int DAY_MINUTES = 1440;
+        const std::string toString();
 
 	private:
 		int hour_;
