@@ -9,10 +9,15 @@ set(PROJECT_SOURCES
 	src/domain/AlarmContext.cpp
 	src/domain/Alarm.cpp
 	src/domain/AlarmManager.cpp
-	src/domain/UIManager.cpp
+  src/domain/PuzzleFactory.h
+
 	src/puzzles/MathPuzzle.h
+  src/puzzles/RandomNumberGenerator.h
+
 	src/types/Days.cpp
 	src/types/TimePoint.cpp
+  src/types/PuzzleResponse.h
+  src/types/TimePoint.h
 )
 
 add_library(AlarmClockLib STATIC ${PROJECT_SOURCES})
