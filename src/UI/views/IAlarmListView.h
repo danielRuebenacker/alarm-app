@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <functional>
-#include "../domain/Alarm.h"
+#include "../../domain/Alarm.h"
 
 class IAlarmListView {
     public:
