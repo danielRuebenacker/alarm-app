@@ -86,3 +86,18 @@ TEST_CASE("Test getMinutesUntilRing method with proper Days schedule") {
 		CHECK(alarm.getMinutesUntilRing(t, Days::Wednesday) == expectedMinutes);
 	}
 }
+
+TEST_CASE("Test should ring method") {
+    Alarm alarm = createMockAlarm(12, 30);
+    TimePoint t(12, 31);
+
+    SUBCASE("Test should ring when alarm is turned off") {
+        CHECK(alarm.shouldTrigger(t) == false);
+    }
+
+    SUBCASE("Test should ring when alarm is turned on and the time is passed") {
+        // note the alarm has not triggered here yet
+        alarm.turnOn();
+        CHECK(alarm.shouldTrigger(t) == true);
+    }
+}
