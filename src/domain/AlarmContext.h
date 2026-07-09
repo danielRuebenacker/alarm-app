@@ -2,7 +2,6 @@
 #include <memory>
 #include <vector>
 #include "./Alarm.h"
-#include "./UIManager.h"
 #include "PuzzleFactory.h"
 
 class ISound;
