@@ -13,7 +13,7 @@ class Alarm {
 
 		TimePoint time_;
 		bool isActive_;
-		bool hasTriggered_;
+		bool hasFinished_;
 		int snoozeMinutes_;
 		int currentNoSnoozes;
 		int maxSnoozes_;
@@ -42,6 +42,7 @@ class Alarm {
 		bool snoozePossible() const;
 		void turnOff();
 		void turnOn();
+        void toggle();
 		bool shouldTrigger(const TimePoint& currentTime) const;
 		bool snooze();
 };
