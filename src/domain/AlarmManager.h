@@ -18,7 +18,7 @@ class AlarmManager {
 		AlarmManager(std::shared_ptr<IClock> clock, std::shared_ptr<IStorage> storage);
 
 		std::vector<Alarm> getAlarms();
-		Alarm* getAlarm(int alarmId);
+		Alarm* getAlarmById(int alarmId);
 		std::vector<Alarm> getActiveAlarms();
 		void setAlarm(const Alarm& alarm);
 		void getAlarmsFromStorage();

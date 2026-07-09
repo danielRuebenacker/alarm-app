@@ -43,7 +43,7 @@ Alarm* AlarmManager::getNextActiveAlarm(const TimePoint& now) {
 }
 
 void AlarmManager::dismissAlarm(int alarmId) {
-	Alarm* alarm = getAlarm(alarmId);
+	Alarm* alarm = getAlarmById(alarmId);
 	if (!alarm) return;
 	alarm->turnOff();
 }
@@ -61,7 +61,7 @@ void AlarmManager::deleteAlarm(int alarmId) {
 	}
 }
 
-Alarm* AlarmManager::getAlarm(int alarmId) {
+Alarm* AlarmManager::getAlarmById(int alarmId) {
 	for (auto& alarm : alarms) {
 		if (alarm.getId() == alarmId) return &alarm;
 	}
