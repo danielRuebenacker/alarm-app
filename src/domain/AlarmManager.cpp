@@ -26,9 +26,13 @@ void AlarmManager::getAlarmsFromStorage() {
 	// clear and insert manuallly
 	alarms.clear();
 
-	for (const auto& alarm : loadedAlarms) {
+    // need to also calculate next highest id (counter lost)
+    int maxId = 0;
+	for (const Alarm& alarm : loadedAlarms) {
 		setAlarm(alarm);
+        if (alarm.getId() > maxId) maxId = alarm.getId();
 	}
+    Alarm::setNextId(maxId + 1);
 
 }
 

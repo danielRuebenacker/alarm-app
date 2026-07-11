@@ -36,6 +36,8 @@ class Alarm {
 
 		// setters
 		void setDays(const Days& days);
+        // for setting nextId after startup
+        static void setNextId(int id);
 
 		// logic
 		int getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay) const;

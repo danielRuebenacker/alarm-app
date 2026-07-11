@@ -38,6 +38,10 @@ void Alarm::setDays(const Days& days) {
 	this->days_ = days;
 }
 
+void Alarm::setNextId(int id) {
+    Alarm::nextId = id;
+}
+
 int Alarm::getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay) const {
 	if (!isActive_) return INT_MAX;
 
