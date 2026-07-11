@@ -72,10 +72,7 @@ bool Alarm::snoozePossible() const {
 };
 
 void Alarm::turnOff() {
-    if (!days_.hasAnyDays()) {
-        // fully turn off
-        isActive_ = false;
-    }
+    isActive_ = false;
     // otherwise don't turn off as has to ring on other days, instead set to hasFinished_
     hasFinished_ = true;
 }
