@@ -8,21 +8,21 @@
 // stores alarms, gets/sets, returns next active alarm, can cancel alarm
 class AlarmManager {
 	private:
-		std::shared_ptr<IClock> clock_;
-		std::shared_ptr<IStorage> storage_;
+        const IClock&  clock_;
+        const IStorage&  storage_;
 
 		// all: sorted by how many minutes until ring
 		std::vector<Alarm> alarms;
 		void makeActiveAlarms();
 	public:
-		AlarmManager(std::shared_ptr<IClock> clock, std::shared_ptr<IStorage> storage);
+		AlarmManager(const IClock& clock, const IStorage& storage);
 
 		std::vector<Alarm> getAlarms();
 		Alarm* getAlarmById(int alarmId);
 		std::vector<Alarm> getActiveAlarms();
 		void setAlarm(const Alarm& alarm);
 		void getAlarmsFromStorage();
-		Alarm* getNextActiveAlarm(const TimePoint& now);
+		Alarm* getNextActiveAlarm();
 		void dismissAlarm(int alarmId);
 		void deleteAlarm(int alarmId);
 		bool snoozeAlarm(Alarm& alarm);

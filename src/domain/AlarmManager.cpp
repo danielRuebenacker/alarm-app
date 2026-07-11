@@ -1,8 +1,8 @@
 #include "AlarmManager.h"
 #include <algorithm>
 
-AlarmManager::AlarmManager(std::shared_ptr<IClock> clock, std::shared_ptr<IStorage> storage)
-	: storage_(std::move(storage)), clock_(std::move(clock)) {}
+AlarmManager::AlarmManager(const IClock& clock, const IStorage& storage)
+	: storage_(storage), clock_(clock) {}
 
 std::vector<Alarm> AlarmManager::AlarmManager::getAlarms() {
 	return alarms;
@@ -10,19 +10,19 @@ std::vector<Alarm> AlarmManager::AlarmManager::getAlarms() {
 
 void AlarmManager::setAlarm(const Alarm& alarm) {
 	// insert in sorted order according to how many minutes until alarm rings
-	int minsUntilRing = alarm.getMinutesUntilRing(clock_->now(), clock_->getCurrentDay());
+	int minsUntilRing = alarm.getMinutesUntilRing(clock_.now(), clock_.getCurrentDay());
 
 	// need to find lowest index, s.t. alarm can be inserted i.e. minsToRing < next.getMinutesUntilRing
 	auto it = std::upper_bound(
 		alarms.begin(), alarms.end(), minsUntilRing,
 		[this](int targetMinutes, const Alarm &existingAlarm) {
-		  return targetMinutes < existingAlarm.getMinutesUntilRing(clock_->now(), clock_->getCurrentDay());
+		  return targetMinutes < existingAlarm.getMinutesUntilRing(clock_.now(), clock_.getCurrentDay());
 		});
 	alarms.insert(it, alarm);
 }
 
 void AlarmManager::getAlarmsFromStorage() {
-	std::vector<Alarm> loadedAlarms = storage_->loadAlarms();
+	std::vector<Alarm> loadedAlarms = storage_.loadAlarms();
 	// clear and insert manuallly
 	alarms.clear();
 
@@ -32,13 +32,8 @@ void AlarmManager::getAlarmsFromStorage() {
 
 }
 
-Alarm* AlarmManager::getNextActiveAlarm(const TimePoint& now) {
-	// first one in list
-	for (auto& alarm : alarms) {
-		if (alarm.isActive()) {
-			return &alarm;
-		}
-	}
+Alarm* AlarmManager::getNextActiveAlarm() {
+    TimePoint now = clock_.now();
 	return nullptr;
 }
 
