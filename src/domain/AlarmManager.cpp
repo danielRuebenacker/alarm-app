@@ -5,7 +5,7 @@
 AlarmManager::AlarmManager(const IClock& clock, IStorage& storage)
 	: storage_(storage), clock_(clock) {}
 
-std::vector<Alarm> AlarmManager::AlarmManager::getAlarms() {
+std::vector<Alarm> AlarmManager::getAlarms() {
 	return alarms;
 }
 
