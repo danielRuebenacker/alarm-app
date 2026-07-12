@@ -13,7 +13,6 @@ class Alarm {
 
 		TimePoint time_;
 		bool isActive_;
-		bool hasFinished_;
 		int snoozeMinutes_;
 		int currentNoSnoozes;
 		int maxSnoozes_;

@@ -2,7 +2,7 @@
 #include <climits>
 
 Alarm::Alarm(TimePoint time, PuzzleType puzzleType, Days days)
-    : time_(time), isActive_(false), hasFinished_(false),
+    : time_(time), isActive_(false),
       snoozeMinutes_(Alarm::DEFAULT_SNOOZE_TIME),
       maxSnoozes_(Alarm::DEFAULT_SNOOZES), currentNoSnoozes(0), puzzleType_(puzzleType),
       days_(days) {
@@ -73,13 +73,10 @@ bool Alarm::snoozePossible() const {
 
 void Alarm::turnOff() {
     isActive_ = false;
-    // otherwise don't turn off as has to ring on other days, instead set to hasFinished_
-    hasFinished_ = true;
 }
 
 void Alarm::turnOn() {
 	isActive_ = true;
-	hasFinished_ = false;
 }
 
 void Alarm::toggle() {
