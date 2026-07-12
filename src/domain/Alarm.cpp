@@ -87,11 +87,12 @@ void Alarm::toggle() {
     }
 }
 
-bool Alarm::shouldTrigger(const TimePoint& currentTime) const {
-	// alarm must be active normally or on current day, not have rung or snoozable, and past the current time point
-	return isActive_ &&
-		   !hasFinished_&&
-		   (currentTime.minutesSinceMidnight() >= time_.minutesSinceMidnight());
+bool Alarm::shouldTrigger(const TimePoint& currentTime, Days::Day currentDay) const {
+    if (!isActive_) return false;
+
+    // otherwise time must have passed and active today or no days
+    return currentTime.minutesSinceMidnight() >= time_.minutesSinceMidnight() &&
+        (!days_.hasAnyDays() || days_.isActive(currentDay));
 }
 
 bool Alarm::snooze() {

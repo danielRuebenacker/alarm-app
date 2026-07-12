@@ -44,6 +44,7 @@ class Alarm {
 		void turnOff();
 		void turnOn();
         void toggle();
-		bool shouldTrigger(const TimePoint& currentTime) const;
+		bool shouldTrigger(const TimePoint& currentTime, Days::Day currentDay = Days::Day::Count) const;
 		bool snooze();
+        void dismiss();
 };
