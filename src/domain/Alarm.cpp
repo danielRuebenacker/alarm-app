@@ -42,6 +42,23 @@ void Alarm::setNextId(int id) {
     Alarm::nextId = id;
 }
 
+void Alarm::setTime(int hour, int min) {
+    time_.setHour(hour);
+    time_.setMin(min);
+}
+
+void Alarm::setSnoozeMinutes(int minutes) {
+    snoozeMinutes_ = minutes;
+}
+
+void Alarm::setMaxSnoozes(int maxSnoozes) {
+    maxSnoozes_ = maxSnoozes;
+}
+
+void Alarm::setPuzzleType(PuzzleType type) {
+    puzzleType_ = type;
+}
+
 int Alarm::getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay) const {
 	if (!isActive_) return INT_MAX;
 

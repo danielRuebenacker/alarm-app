@@ -35,6 +35,11 @@ class Alarm {
 
 		// setters
 		void setDays(const Days& days);
+        void setTime(int hour, int min);
+        void setSnoozeMinutes(int minutes);
+        void setMaxSnoozes(int maxSnoozes);
+        void setPuzzleType(PuzzleType type);
+
         // for setting nextId after startup
         static void setNextId(int id);
 
