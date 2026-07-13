@@ -27,4 +27,6 @@ class AlarmManager {
 		void deleteAlarm(int alarmId);
 		bool snoozeAlarm(Alarm& alarm);
         bool wasAlarmDismissed(int alarmId);
+
+        Alarm* getMostRecentlyMissedAlarm(int daysFrom1970ToSleepDay, const Days::Day& sleepDay);
 };

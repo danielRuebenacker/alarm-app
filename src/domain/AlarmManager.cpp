@@ -91,3 +91,60 @@ bool AlarmManager::wasAlarmDismissed(int alarmId) {
     }
     return false;
 }
+
+Alarm* AlarmManager::getMostRecentlyMissedAlarm(int daysFrom1970ToSleepDay, const Days::Day& sleepDay) {
+  // NOTE: this method is to be run at startup, when the dismissedAlarmIds
+  // vector is stale from the day when the system fell alseep
+  // follow a call to this method with refreshing (optionally clearning) the dismissed vector
+    Alarm* mostRecentlyMissed = nullptr;
+    int narrowestMissedMargin = std::numeric_limits<int>::max();
+    // we assume we went to sleep in the past xD
+    int dayDifference = clock_.getDaysSince1970() - daysFrom1970ToSleepDay ;
+    TimePoint wakeTime = clock_.now();
+    Days::Day currentDay = clock_.getCurrentDay();
+
+    // we ignore alarms if they are older than one day (could display alarm missed message)
+    if (dayDifference > 1) {
+        return nullptr;
+    }
+
+    // if it is a different day we discard the
+    // loop through alarms
+    for (Alarm &alarm : alarms) {
+        // ignore inactive alarms
+        if (!alarm.isActive()) continue;
+
+        int missMargin = -1;
+        int alarmMins = alarm.getTime().minutesSinceMidnight();
+
+        if (dayDifference == 0) {
+            // same day (dismissedAlarmIds matters!)
+            // if not handled
+            if (!wasAlarmDismissed(alarm.getId()) &&
+                alarm.shouldTrigger(wakeTime, currentDay)) {
+                missMargin = wakeTime.minutesSinceMidnight() - alarmMins;
+            }
+        }
+        else if (dayDifference == 1) {
+            // crossed one midnight boundary
+            // did we miss an alarm yesterday?
+            bool activeYesterday = !alarm.getDays().hasAnyDays() || alarm.getDays().isActive(sleepDay);
+            // NOTE: dismissedAlarmIds is then stale from yesterday!!!!
+            if (activeYesterday && !wasAlarmDismissed(alarm.getId())) {
+                missMargin = wakeTime.minutesSinceMidnight() + (TimePoint::DAY_MINUTES - alarmMins);
+            }
+
+            // did we miss an alarm this morning but fell alseep last night?
+            if (alarm.shouldTrigger(wakeTime, currentDay)) {
+                missMargin = wakeTime.minutesSinceMidnight() - alarmMins;
+            }
+        }
+
+        if (missMargin >= 0 && missMargin < narrowestMissedMargin) {
+            narrowestMissedMargin = missMargin;
+            mostRecentlyMissed = &alarm;
+        }
+    }
+
+    return mostRecentlyMissed;
+}
