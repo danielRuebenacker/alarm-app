@@ -33,12 +33,25 @@ void AlarmManager::getAlarmsFromStorage() {
         if (alarm.getId() > maxId) maxId = alarm.getId();
 	}
     Alarm::setNextId(maxId + 1);
-
 }
 
-Alarm* AlarmManager::getNextActiveAlarm() {
+const Alarm* AlarmManager::getNextActiveAlarm() {
     TimePoint now = clock_.now();
-	return nullptr;
+    Days::Day currentDay = clock_.getCurrentDay();
+    int shortestTimeDiff = std::numeric_limits<int>::max();
+    const Alarm* nextAlarm = nullptr;
+
+    for (const Alarm &alarm : alarms) {
+        // if an alarm is closer, put it as the shortest
+        // we ignore dismissed / deactivated alarms!!
+        if (alarm.isActive() &&
+            !wasAlarmDismissed(alarm.getId()) &&
+            alarm.getMinutesUntilRing(now, currentDay) < shortestTimeDiff) {
+            shortestTimeDiff = alarm.getMinutesUntilRing(now, currentDay);
+            nextAlarm = &alarm;
+        }
+    }
+    return nextAlarm;
 }
 
 void AlarmManager::dismissAlarm(int alarmId) {
