@@ -9,7 +9,7 @@ std::vector<Alarm> AlarmManager::getAlarms() {
 	return alarms;
 }
 
-void AlarmManager::setAlarm(const Alarm& alarm) {
+void AlarmManager::addAlarm(const Alarm& alarm) {
     // if alarm has the same id, this is treated as an overwrite!
     auto it = std::find_if(alarms.begin(), alarms.end(), [&](const Alarm &a) {
     return a.getId() == alarm.getId();
@@ -29,7 +29,7 @@ void AlarmManager::getAlarmsFromStorage() {
     // need to also calculate next highest id (counter lost)
     int maxId = 0;
 	for (const Alarm& alarm : loadedAlarms) {
-		setAlarm(alarm);
+        alarms.push_back(alarm);
         if (alarm.getId() > maxId) maxId = alarm.getId();
 	}
     Alarm::setNextId(maxId + 1);
