@@ -36,3 +36,12 @@ const std::string TimePoint::toString() {
     return std::to_string(hour_) + ":" + std::to_string(min_);
 
 }
+
+
+void TimePoint::setHour(int hour) {
+    hour_ = hour;
+}
+
+void TimePoint::setMin(int min) {
+    min_ = min;
+}

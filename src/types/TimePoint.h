@@ -10,6 +10,9 @@ class TimePoint {
 		static constexpr int DAY_MINUTES = 1440;
         const std::string toString();
 
+        void setHour(int hour);
+        void setMin(int min);
+
 	private:
 		int hour_;
 		int min_;
