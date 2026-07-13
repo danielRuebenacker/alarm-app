@@ -57,7 +57,8 @@ const Alarm* AlarmManager::getNextActiveAlarm() {
 void AlarmManager::dismissAlarm(int alarmId) {
 	Alarm* alarm = getAlarmById(alarmId);
 	if (!alarm) return;
-	alarm->turnOff();
+
+    dismissedAlarmIds.push_back(alarmId);
 }
 
 void AlarmManager::deleteAlarm(int alarmId) {
@@ -82,4 +83,11 @@ Alarm* AlarmManager::getAlarmById(int alarmId) {
 
 bool AlarmManager::snoozeAlarm(Alarm& alarm) {
 	return alarm.snooze();
+}
+
+bool AlarmManager::wasAlarmDismissed(int alarmId) {
+    for (int id : dismissedAlarmIds) {
+        if (alarmId == id) return true;
+    }
+    return false;
 }
