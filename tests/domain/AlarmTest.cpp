@@ -1,12 +1,8 @@
 #include "../doctest.h"
 #include <climits>
 
-#include "src/domain/Alarm.h"
+#include "MockAlarm.h"
 
-Alarm createMockAlarm(int hour, int min, const Days& schedule = Days{}) {
-	TimePoint t(hour, min);
-	return Alarm(t, PuzzleType::MATHS, schedule);
-}
 
 TEST_CASE("Test alarm construction") {
 	// 12:30, day irrelevant
