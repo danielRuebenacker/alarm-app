@@ -9,20 +9,20 @@
 class AlarmManager {
 	private:
         const IClock&  clock_;
-        const IStorage&  storage_;
+        IStorage&  storage_;
 
 		std::vector<Alarm> alarms;
         std::vector<int> dismissedAlarmIds;
 		void makeActiveAlarms();
 	public:
-		AlarmManager(const IClock& clock, const IStorage& storage);
+		AlarmManager(const IClock& clock, IStorage& storage);
 
 		std::vector<Alarm> getAlarms();
 		Alarm* getAlarmById(int alarmId);
 		std::vector<Alarm> getActiveAlarms();
 		void addAlarm(const Alarm& alarm);
 		void getAlarmsFromStorage();
-		Alarm* getNextActiveAlarm();
+		const Alarm* getNextActiveAlarm();
 		void dismissAlarm(int alarmId);
 		void deleteAlarm(int alarmId);
 		bool snoozeAlarm(Alarm& alarm);
