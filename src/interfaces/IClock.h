@@ -8,4 +8,5 @@ class IClock {
 		virtual ~IClock() = default;
 		virtual TimePoint now() const = 0;
 		virtual Days::Day getCurrentDay() const = 0;
+        virtual int getDaysSince1970() const = 0;
 };
