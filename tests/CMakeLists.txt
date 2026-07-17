@@ -3,8 +3,8 @@ add_executable(run_project_tests
 	types/DaysTest.cpp
 	types/TimePointTest.cpp
 	domain/AlarmTest.cpp
-  domain/AlarmManagerTest.cpp
-  domain/MockAlarm.cpp
+	domain/AlarmManagerTest.cpp
+	domain/MockAlarm.cpp
 )
 
 target_link_libraries(run_project_tests PRIVATE AlarmClockLib)
