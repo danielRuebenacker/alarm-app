@@ -26,4 +26,8 @@ public:
 
     void saveAlarms(const std::vector<Alarm> alarms) override { storedAlarms = alarms; }
     void saveDismissed(const std::vector<int> dismissedAlarmIds) override { storedDismissedAlarmIds = dismissedAlarmIds; }
+
+	int getDaysFrom1970ToSleepDay() const override { return -1; }
+	int getSleepDay() const override { return -1; }
+	void saveSleepStateInfo(int daysSince1970, const Days::Day currentDay) override {};
 };
