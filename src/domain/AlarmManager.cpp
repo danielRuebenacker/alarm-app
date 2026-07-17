@@ -35,6 +35,12 @@ void AlarmManager::getAlarmsFromStorage() {
     Alarm::setNextId(maxId + 1);
 }
 
+void AlarmManager::getDismissedAlarmIdsFromStorage() {
+	std::vector<int> loadedDismissed = storage_.loadDismissedAlarmIds();
+	// replace
+	dismissedAlarmIds = loadedDismissed;
+}
+
 const Alarm* AlarmManager::getNextActiveAlarm() {
     TimePoint now = clock_.now();
     Days::Day currentDay = clock_.getCurrentDay();

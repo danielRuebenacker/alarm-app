@@ -22,6 +22,7 @@ class AlarmManager {
 		std::vector<Alarm> getActiveAlarms();
 		void addAlarm(const Alarm& alarm);
 		void getAlarmsFromStorage();
+		void getDismissedAlarmIdsFromStorage();
 		const Alarm* getNextActiveAlarm();
 		void dismissAlarm(int alarmId);
 		void deleteAlarm(int alarmId);
