@@ -10,4 +10,7 @@ class IStorage {
 		virtual void saveDismissed(const std::vector<int> dismissedAlarmIds) = 0;
 		virtual std::vector<Alarm> loadAlarms() const = 0;
         virtual std::vector<int> loadDismissedAlarmIds() = 0;
+		virtual void saveSleepStateInfo(int daysSince1970, const Days::Day currentDay) = 0;
+		virtual int getDaysFrom1970ToSleepDay() const = 0;
+		virtual int getSleepDay() const = 0;
 };
