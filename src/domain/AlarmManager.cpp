@@ -146,5 +146,7 @@ Alarm* AlarmManager::getMostRecentlyMissedAlarm(int daysFrom1970ToSleepDay, cons
         }
     }
 
+	// make the choice here as its already calculated: > 15 minutes and we ignore!
+	if (narrowestMissedMargin > 15) return nullptr;
     return mostRecentlyMissed;
 }
