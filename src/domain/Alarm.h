@@ -39,6 +39,7 @@ class Alarm {
         void setSnoozeMinutes(int minutes);
         void setMaxSnoozes(int maxSnoozes);
         void setPuzzleType(PuzzleType type);
+		void setDay(Days::Day day);
 
         // for setting nextId after startup
         static void setNextId(int id);

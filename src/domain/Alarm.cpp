@@ -59,6 +59,10 @@ void Alarm::setPuzzleType(PuzzleType type) {
     puzzleType_ = type;
 }
 
+void Alarm::setDay(Days::Day day) {
+	days_.set(day);
+}
+
 int Alarm::getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay) const {
 	if (!isActive_) return INT_MAX;
 
