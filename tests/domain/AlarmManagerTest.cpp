@@ -69,11 +69,18 @@ TEST_CASE("Test getNextActiveAlarm") {
     MockStorage mockStorage;
     AlarmManager manager(mockClock, mockStorage);
 
-    SUBCASE("Test with three simple alarms, no day masks, also check dismissing alarms") {
-        // set the date/time
-        mockClock.setTime(8, 0);
-        mockClock.setCurrentDay(Days::Monday);
+    // set the date/time
+    mockClock.setTime(8, 0);
+    mockClock.setCurrentDay(Days::Monday);
 
+    SUBCASE("Test with inactive alarm -- should return nullptr") {
+      Alarm off = createMockAlarm(0, 0);
+	  manager.addAlarm(off);
+	  const Alarm *next = manager.getNextActiveAlarm();
+	  REQUIRE(next == nullptr);
+    }
+
+    SUBCASE("Test with three simple alarms, no day masks, also check dismissing alarms") {
         // known Ids
         Alarm::setNextId(10);
         Alarm earlyAlarm = createMockAlarm(6, 0);  earlyAlarm.turnOn();  // Id = 10
@@ -102,5 +109,37 @@ TEST_CASE("Test getNextActiveAlarm") {
         next = manager.getNextActiveAlarm();
         REQUIRE(next != nullptr);
         CHECK(next->getId() == 10); // wrapping
+    }
+
+    SUBCASE("Test with complex alarms (with days set)") {
+		// recall time is Mon :: 8 am
+		Alarm::setNextId(20);
+		Alarm monTuesEvening = createMockAlarm(18, 0);  monTuesEvening.turnOn();  // Id = 20
+		monTuesEvening.setDay(Days::Monday);
+		monTuesEvening.setDay(Days::Tuesday);
+
+		Alarm tuesWedMorning = createMockAlarm(9, 0); tuesWedMorning.turnOn(); // Id = 21
+		tuesWedMorning.setDay(Days::Tuesday);
+		tuesWedMorning.setDay(Days::Wednesday);
+
+		manager.addAlarm(monTuesEvening);
+		manager.addAlarm(tuesWedMorning);
+
+		// basic checking that mon evening is next
+		const Alarm* next = manager.getNextActiveAlarm();
+		REQUIRE(next != nullptr);
+		CHECK(next->getId() == monTuesEvening.getId());
+
+		// check when dismissing it its now tuesday morning
+		manager.dismissAlarm(monTuesEvening.getId());
+		next = manager.getNextActiveAlarm();
+		REQUIRE(next != nullptr);
+		CHECK(next->getId() == tuesWedMorning.getId());
+		
+		// dismiss this alarm also (should then loop back around to Tuesday evening)
+		manager.dismissAlarm(tuesWedMorning.getId());
+		next = manager.getNextActiveAlarm();
+		REQUIRE(next != nullptr);
+		CHECK(next->getId() == monTuesEvening.getId());
     }
 }
