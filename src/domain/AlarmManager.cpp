@@ -48,12 +48,16 @@ const Alarm* AlarmManager::getNextActiveAlarm() {
     const Alarm* nextAlarm = nullptr;
 
     for (const Alarm &alarm : alarms) {
-        // if an alarm is closer, put it as the shortest
-        // we ignore dismissed / deactivated alarms!!
+	  // if an alarm is closer, put it as the shortest
+	  // have to factor in dismissed alarms!! alarms are only dismissed for one day!!
+	  int minsUntilRingNoDismiss = alarm.getMinutesUntilRing(now, currentDay);
+	  int actualTimeUntilRing = wasAlarmDismissed(alarm.getId())
+		? minsUntilRingNoDismiss + TimePoint::DAY_MINUTES
+		: minsUntilRingNoDismiss;
+			
         if (alarm.isActive() &&
-            !wasAlarmDismissed(alarm.getId()) &&
-            alarm.getMinutesUntilRing(now, currentDay) < shortestTimeDiff) {
-            shortestTimeDiff = alarm.getMinutesUntilRing(now, currentDay);
+            actualTimeUntilRing < shortestTimeDiff) {
+            shortestTimeDiff = actualTimeUntilRing;
             nextAlarm = &alarm;
         }
     }
