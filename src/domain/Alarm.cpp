@@ -92,7 +92,8 @@ int Alarm::getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay)
 		daysUntil = days_.daysUntilNextActive(tomorrow) + 1;
 	}
 
-	return (daysUntil * dayMins) + (alarmMins - currentMins);
+	return (daysUntil * dayMins) + ((alarmMins - currentMins + dayMins) % dayMins);
+}
 }
 
 bool Alarm::snoozePossible() const {
