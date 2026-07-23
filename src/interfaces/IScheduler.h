@@ -1,9 +1,11 @@
+#pragma once
 #include <cstdint>
 #include <functional>
 #include <chrono>
 
 // abstract class for platform specific scheduler
 class IScheduler {
+ public:
 	using TimerHandle = std::uintptr_t;
 	static constexpr TimerHandle kInvalidHandle = 0;
 
