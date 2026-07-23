@@ -13,8 +13,8 @@ private:
     AlarmManager& alarmManager_;
 
 public:
-  AlarmListPresenter(IAlarmListView &view, IRouter& router, AlarmManager &alarmManager)
-      : view_(view), router_(router), alarmManager_(alarmManager) {
+	AlarmListPresenter(IAlarmListView &view, IRouter& router, AlarmManager &alarmManager)
+		: view_(view), router_(router), alarmManager_(alarmManager) {
 
         // what to do when we press a single alarm in the list
         view_.setOnAlarmPressed([this](int alarmId) {
@@ -23,9 +23,7 @@ public:
 
         // what to do when an alarm is toggled
         view_.setOnAlarmToggled([this](int alarmId) {
-                Alarm* alarm = alarmManager_.getAlarmById(alarmId);
-                if (!alarm) return;
-                alarm->toggle();
+			alarmManager_.toggleAlarm(alarmId);
         });
 
         // only one way to get to alarm list is from home, so send back there
@@ -33,5 +31,6 @@ public:
 			router_.navigateTo(ScreenType::Home);
         });
 
-  } 
+		view_.displayListOfAlarms(alarmManager.getAlarms());
+	}
 };
