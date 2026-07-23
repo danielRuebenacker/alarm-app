@@ -1,7 +1,9 @@
 #pragma once
 #include <functional>
 
-class IAlarmRingingView {
+#include "View.h"
+
+class IAlarmRingingView : public View {
     public:
         virtual ~IAlarmRingingView() = default;
         // for button to snooze

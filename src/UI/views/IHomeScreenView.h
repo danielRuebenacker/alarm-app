@@ -2,7 +2,9 @@
 #include <string>
 #include <functional>
 
-class IHomeScreenView {
+#include "View.h"
+
+class IHomeScreenView : public View {
     public:
         virtual ~IHomeScreenView() = default;
         // display time

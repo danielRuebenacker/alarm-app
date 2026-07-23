@@ -3,7 +3,9 @@
 #include <functional>
 #include "../../domain/Alarm.h"
 
-class IAlarmListView {
+#include "View.h"
+
+class IAlarmListView : public View {
     public:
         virtual ~IAlarmListView() = default;
         // list all alarms (with info and toggles)

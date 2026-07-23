@@ -5,7 +5,9 @@
 #include "../types/PuzzleType.h"
 #include "../types/PuzzleResponse.h"
 
-class IPuzzleView {
+#include "View.h"
+
+class IPuzzleView : public View {
     public:
         virtual ~IPuzzleView() = default;
         virtual void updateTimeoutBar(int secondsLeft) = 0;

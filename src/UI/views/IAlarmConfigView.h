@@ -1,8 +1,10 @@
 #pragma once
-#include "../domain/Alarm.h"
+#include "../../domain/Alarm.h"
 #include <functional>
 
-class IAlarmConfigView {
+#include "View.h"
+
+class IAlarmConfigView : public View {
     public:
         virtual ~IAlarmConfigView() = default;
         // display information

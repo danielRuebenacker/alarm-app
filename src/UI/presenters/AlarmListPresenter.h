@@ -4,7 +4,9 @@
 #include "../../interfaces/IRouter.h"
 #include "src/types/ScreenType.h"
 
-class AlarmListPresenter {
+#include "Presenter.h"
+
+class AlarmListPresenter : public Presenter {
 private:
     IAlarmListView& view_;
     IRouter& router_;
@@ -16,7 +18,7 @@ public:
 
         // what to do when we press a single alarm in the list
         view_.setOnAlarmPressed([this](int alarmId) {
-                router_.navigateTo(ScreenType::AlarmConfig, alarmId);
+			router_.navigateTo(ScreenType::AlarmConfig, alarmId);
         });
 
         // what to do when an alarm is toggled
@@ -28,7 +30,7 @@ public:
 
         // only one way to get to alarm list is from home, so send back there
         view_.setOnBackButtonPress([this]() {
-                router_.navigateTo(ScreenType::Home);
+			router_.navigateTo(ScreenType::Home);
         });
 
   } 

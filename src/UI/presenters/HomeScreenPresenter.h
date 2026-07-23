@@ -4,7 +4,9 @@
 #include "../../interfaces/IClock.h"
 #include "../../types/ScreenType.h"
 
-class HomeScreenPresenter {
+#include "Presenter.h"
+
+class HomeScreenPresenter : public Presenter {
     private:
         IHomeScreenView& view_;
         IRouter& router_;
@@ -15,7 +17,7 @@ class HomeScreenPresenter {
         : view_(view), router_(router), clock_(clock) {
           // specify what view should do
             view.setOnClickAlarmList([this]() {
-                    this->router_.navigateTo(ScreenType::AlarmList);
+				this->router_.navigateTo(ScreenType::AlarmList);
             });
 
             // initial update
