@@ -1,6 +1,7 @@
 #include "TimePoint.h"
 #include <stdexcept>
 #include <string>
+#include <format>
 
 TimePoint::TimePoint(int hour, int min) {
 	if (!validateHour(hour)) throw std::invalid_argument("invalid hour");
@@ -33,8 +34,7 @@ bool TimePoint::validateMin(int min) {
 }
 
 const std::string TimePoint::toString() {
-    return std::to_string(hour_) + ":" + std::to_string(min_);
-
+	return std::format("{:02d}:{:02d}", hour_, min_);
 }
 
 
