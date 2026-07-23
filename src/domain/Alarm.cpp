@@ -4,7 +4,7 @@
 Alarm::Alarm(TimePoint time, PuzzleType puzzleType, Days days)
     : time_(time), isActive_(false),
       snoozeMinutes_(Alarm::DEFAULT_SNOOZE_TIME),
-      maxSnoozes_(Alarm::DEFAULT_SNOOZES), currentNoSnoozes(0), puzzleType_(puzzleType),
+      currentNoSnoozes(0), maxSnoozes_(Alarm::DEFAULT_SNOOZES), puzzleType_(puzzleType),
       days_(days) {
 		  id = nextId++;
 	  }
@@ -31,6 +31,13 @@ PuzzleType Alarm::getPuzzleType() const {
 	return puzzleType_;
 }
 
+int Alarm::getSnoozeMinutes() const {
+	return snoozeMinutes_;
+}
+
+int Alarm::getMaxSnoozes() const {
+	return maxSnoozes_;
+}
 // -----------------------------------------------
 
 // setters

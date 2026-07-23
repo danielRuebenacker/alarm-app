@@ -14,10 +14,11 @@ class Alarm {
 		TimePoint time_;
 		bool isActive_;
 		int snoozeMinutes_;
-		int currentNoSnoozes;
 		int maxSnoozes_;
 		PuzzleType puzzleType_;
 		Days days_;
+
+		int currentNoSnoozes;
 
 		// static
 		static constexpr int DEFAULT_SNOOZES = 3;
@@ -30,6 +31,8 @@ class Alarm {
 		TimePoint getTime() const;
 		bool isActive() const;
 		PuzzleType getPuzzleType() const;
+		int getSnoozeMinutes() const;
+		int getMaxSnoozes() const;
 		int getCurrentNoSnoozes() const;
 		Days getDays() const;
 
