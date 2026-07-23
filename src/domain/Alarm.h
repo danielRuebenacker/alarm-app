@@ -4,6 +4,7 @@
 #include "../types/Days.h"
 
 #include <atomic>
+#include <chrono>
 
 class Alarm {
 	private:
@@ -49,6 +50,7 @@ class Alarm {
 
 		// logic
 		int getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay) const;
+		std::chrono::milliseconds getDurationUntilRing(const TimePoint& now, const Days::Day currentDay) const;
 		bool snoozePossible() const;
 		void turnOff();
 		void turnOn();

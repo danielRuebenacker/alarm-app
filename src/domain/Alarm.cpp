@@ -94,6 +94,15 @@ int Alarm::getMinutesUntilRing(const TimePoint& now, const Days::Day currentDay)
 
 	return (daysUntil * dayMins) + ((alarmMins - currentMins + dayMins) % dayMins);
 }
+
+std::chrono::milliseconds Alarm::getDurationUntilRing(const TimePoint& now, const Days::Day currentDay) const {
+	int minutes = getMinutesUntilRing(now, currentDay);
+
+	if (minutes == INT_MAX) {
+		return std::chrono::milliseconds::max();
+	}
+	
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::minutes(minutes));
 }
 
 bool Alarm::snoozePossible() const {
