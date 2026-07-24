@@ -13,7 +13,7 @@ class LvglAlarmListView : public IAlarmListView {
 	std::function<void()> onBackButtonClickedCallback_;
 	std::function<void(int)> onAlarmToggledCallback_;
 	std::function<void(int)> onAlarmClickedCallback_;
-	std::function<void(int)> onAddAlarmClickedCallback_;
+	std::function<void()> onAddAlarmClickedCallback_;
 
 	void handleBackButtonClicked() {
 		if (onBackButtonClickedCallback_) onBackButtonClickedCallback_();
@@ -29,21 +29,35 @@ class LvglAlarmListView : public IAlarmListView {
 		if (onAlarmClickedCallback_) onAlarmClickedCallback_(alarmId);
 	}
 
-	void handleBackButtonClicked() {
+	void handleAddAlarmClicked() {
 		if (onAddAlarmClickedCallback_) onAddAlarmClickedCallback_();
 	}
 
 public:
 	LvglAlarmListView(lv::ObjectView parent = lv::screen_active()) {
 		// create root element
-		root_ = lv::vbox(parent).fill().center_content();
-		lv::Label::create(root_).text("Alarms:");
-		// back button
-		lv::Button::create(root_)
-			.text(lv::symbol::left)
-			.on_click<&LvglAlarmListView::handleBackButtonClicked>(this);
+		root_ = lv::vbox(parent).fill().center_content().add_flag(LV_OBJ_FLAG_SCROLLABLE);
+
+		// header (text and back button)
+        auto header = lv::hbox(root_).fill_width().align(LV_ALIGN_TOP_MID);
+        
+        lv::Button::create(header)
+            .text(lv::symbol::left)
+            .on_click<&LvglAlarmListView::handleBackButtonClicked>(this);
+
+        lv::Label::create(header)
+            .text("Alarms")
+            .font(&lv_font_montserrat_24);
+
 		// create vbox for alarms
-		alarmsContainer_ = lv::vbox(root_).fill().center_content();
+		alarmsContainer_ = lv::vbox(root_).center_content().fill_width();
+		auto addButton = lv::Button::create(root_)
+			.size(40, 40)
+			.add_flag(LV_OBJ_FLAG_FLOATING)
+			.radius(LV_RADIUS_CIRCLE)
+			.align(LV_ALIGN_BOTTOM_RIGHT, -15, -15);
+		auto addButtonLabel = lv::Label::create(addButton).text(lv::symbol::plus).center();
+		addButton.on_click<&LvglAlarmListView::handleAddAlarmClicked>(this);
 	}
 
     void displayListOfAlarms(const std::vector<Alarm>& listOfAlarms) override {
@@ -97,7 +111,7 @@ public:
 		onAlarmClickedCallback_ = callback;
     }
 
-	void setOnAddAlarmClicked(std::function<void> callback) override {
+	void setOnAddAlarmClicked(std::function<void()> callback) override {
 		onAddAlarmClickedCallback_ = callback;
 	}
 };
