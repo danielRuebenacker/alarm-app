@@ -32,5 +32,10 @@ public:
         });
 
 		view_.displayListOfAlarms(alarmManager.getAlarms());
+
+		view_.setOnAddAlarmClicked([this]() {
+			// router will handle creating new alarm
+			router_.navigateTo(ScreenType::AlarmConfig);
+		});
 	}
 };
