@@ -1,2 +1,4 @@
 build/
 /plan.org
+/.clang-format
+/external
