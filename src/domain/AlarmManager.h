@@ -20,14 +20,16 @@ class AlarmManager {
 		std::vector<Alarm> getAlarms();
 		Alarm* getAlarmById(int alarmId);
 		std::vector<Alarm> getActiveAlarms();
-		void addAlarm(const Alarm& alarm);
 		void getAlarmsFromStorage();
 		void getDismissedAlarmIdsFromStorage();
 		const Alarm* getNextActiveAlarm();
+
+		void addAlarm(const Alarm& alarm);
 		void dismissAlarm(int alarmId);
 		void deleteAlarm(int alarmId);
 		bool snoozeAlarm(Alarm& alarm);
         bool wasAlarmDismissed(int alarmId);
+		void toggleAlarm(int alarmId);
 
         Alarm* getMostRecentlyMissedAlarm(int daysFrom1970ToSleepDay, const Days::Day& sleepDay);
 };

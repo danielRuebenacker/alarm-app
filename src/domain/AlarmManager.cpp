@@ -102,6 +102,10 @@ bool AlarmManager::wasAlarmDismissed(int alarmId) {
     return false;
 }
 
+void AlarmManager::toggleAlarm(int alarmId) {
+	if (Alarm* a = getAlarmById(alarmId)) { a->toggle(); storage_.saveAlarms(alarms); }
+}
+
 Alarm* AlarmManager::getMostRecentlyMissedAlarm(int daysFrom1970ToSleepDay, const Days::Day& sleepDay) {
   // NOTE: this method is to be run at startup, when the dismissedAlarmIds
   // vector is stale from the day when the system fell alseep
