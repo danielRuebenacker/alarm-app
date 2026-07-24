@@ -8,9 +8,12 @@
 #include "tests/mock-interfaces/MockClock.h"
 #include "tests/mock-interfaces/MockStorage.h"
 
+#define SCR_WIDTH 320
+#define SCR_HEIGHT 480 
+
 int main() {
     lv::init();
-    lv::SDLDisplay display(480, 320);
+    lv::SDLDisplay display(SCR_HEIGHT, SCR_WIDTH);
 
 	MockClock clock;
 	MockStorage storage;
