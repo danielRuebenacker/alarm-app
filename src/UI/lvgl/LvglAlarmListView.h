@@ -65,7 +65,7 @@ public:
 			auto alarmCard = lv::Button::create(alarmsContainer_);
 			alarmCard
 				.fill_width()
-				.bg_color(lv::rgb(0x2196F3))
+				.bg_color(lv::rgb(0x0A72C7))
 				.bg_opa(255);
 			// add alarm id
 
