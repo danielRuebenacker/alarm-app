@@ -20,7 +20,7 @@ public:
   LvglHomeScreenView(lv::ObjectView parent = lv::screen_active()) {
 	  auto root = lv::vbox(parent).fill().center_content();
 
-	  timeLabel_ = lv::Label::create(root).text("Time: 00:00");	
+	  timeLabel_ = lv::Label::create(root).font(&lv_font_montserrat_24).text("Time: 00:00");	
 
       alarmListButton_ = lv::Button::create(root).text("View Alarms")
 		.on_click<&LvglHomeScreenView::handleAlarmListClick>(this);						
