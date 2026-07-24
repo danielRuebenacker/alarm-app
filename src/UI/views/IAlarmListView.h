@@ -17,5 +17,5 @@ class IAlarmListView : public View {
         // when alarm pressed, take to its config (using int alarmID)
         virtual void setOnAlarmPressed(std::function<void(int)> callback) = 0;
 		// create alarms (leads to empty config)
-		virtual void setOnAddAlarmClicked(std::function<void> callback) = 0;
+		virtual void setOnAddAlarmClicked(std::function<void()> callback) = 0;
 };
