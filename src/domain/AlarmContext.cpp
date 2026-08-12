@@ -37,8 +37,6 @@ AlarmManager& AlarmContext::getAlarmManager(){
 }
 
 void AlarmContext::checkAndOrTrigger() {
-	// get time 
-	TimePoint now = clock_->now();
 	const Alarm* nextAlarm = alarmManager_->getNextActiveAlarm();
 	// if doesn't exist, not alarms are set
 	if (!nextAlarm) return;
