@@ -7,7 +7,6 @@
 class ISound;
 class IClock;
 class IInput;
-class IAppState;
 class IScreen;
 class IStorage;
 class AlarmManager;
@@ -15,7 +14,6 @@ class AlarmManager;
 // the app's state machine
 class AlarmContext {
 	private:
-		std::unique_ptr<IAppState>	currentState_;
 		std::unique_ptr<IPuzzle> currentPuzzle_;
 		std::shared_ptr<ISound> 	sound_;
 		std::shared_ptr<IClock> 	clock_;
@@ -41,7 +39,6 @@ class AlarmContext {
           AlarmContext(AlarmContext &&) = default;
           AlarmContext &operator=(AlarmContext &&) = default;
 
-          void changeState(std::unique_ptr<IAppState> newState);
           void setup();
           void update();
           IClock& getClock();
