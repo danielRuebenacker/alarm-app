@@ -43,6 +43,8 @@ void AlarmContext::checkAndOrTrigger() {
 	// if doesn't exist, not alarms are set
 	if (!nextAlarm) return;
 
+	// get time
+	TimePoint now = clock_->now();
 	if (nextAlarm->shouldTrigger(now)) {
 		sound_->ring();
 	}
