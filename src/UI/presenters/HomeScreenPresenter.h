@@ -24,7 +24,7 @@ class HomeScreenPresenter : public Presenter {
             view_.updateTime(clock_.now().toString());
         };
 
-        void onSystemClockTick() {
+        void onTick() override {
             view_.updateTime(clock_.now().toString());
         }
 };

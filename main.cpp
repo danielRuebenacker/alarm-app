@@ -5,7 +5,7 @@
 #include "src/types/PuzzleType.h"
 #include "src/types/Days.h"
 
-#include "tests/mock-interfaces/MockClock.h"
+#include "src/platform/SystemClock.h"
 #include "tests/mock-interfaces/MockStorage.h"
 
 #define SCR_WIDTH 320
@@ -15,7 +15,7 @@ int main() {
     lv::init();
     lv::SDLDisplay display(SCR_HEIGHT, SCR_WIDTH);
 
-	MockClock clock;
+	SystemClock clock;
 	MockStorage storage;
 	Alarm a1({9, 30}, PuzzleType::MATHS, {});
 	storage.addAlarmToStoredAlarms(a1);

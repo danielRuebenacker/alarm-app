@@ -5,6 +5,7 @@ add_executable(run_project_tests
 	domain/AlarmTest.cpp
 	domain/AlarmManagerTest.cpp
 	domain/MockAlarm.cpp
+	platform/SystemClockTest.cpp
 )
 
 target_link_libraries(run_project_tests PRIVATE AlarmClockLib)

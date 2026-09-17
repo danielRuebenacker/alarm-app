@@ -27,8 +27,17 @@ class LvglRouter : public IRouter {
 	std::unique_ptr<View> currentView_;
 	std::unique_ptr<Presenter> currentPresenter_;
 
+	// ticks the active presenter (e.g. to update the home screen clock)
+	lv::Timer clockTimer_;
+
+	void onClockTick() {
+		if (currentPresenter_) currentPresenter_->onTick();
+	}
+
   public:
-	LvglRouter(IClock& clock, AlarmManager& manager) : clock_(clock), manager_(manager) {}
+	LvglRouter(IClock& clock, AlarmManager& manager) : clock_(clock), manager_(manager) {
+		clockTimer_ = lv::Timer::create<&LvglRouter::onClockTick>(1000, this);
+	}
 
     void navigateTo(ScreenType screen, int targetAlarmId = -1) override {
 		currentView_.reset();
