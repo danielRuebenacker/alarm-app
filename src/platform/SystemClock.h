@@ -4,14 +4,8 @@
 
 #include "../interfaces/IClock.h"
 
-// Wall-clock time supplied by the host platform.
-//
-// LVGL only exposes a monotonic millisecond tick (lv_tick_get), which cannot
-// tell us the time of day or the date, so wall-clock time has to come from the
-// platform. Both desktop Linux (std::chrono / system time) and M5Stack (ESP32
-// system clock, synced from the hardware RTC / NTP) expose the same POSIX time
-// API, so a single implementation covers both targets. The only M5Stack-specific
-// setup required is setting the system time at boot (e.g. configTzTime()).
+// time on both desktop linux and esp32 exposed via same functions, so this is common
+
 class SystemClock : public IClock {
 	public:
 		TimePoint now() const override {
@@ -26,7 +20,7 @@ class SystemClock : public IClock {
 			return daysSince1970FromTm(localNow());
 		}
 
-		// -- pure conversions, exposed for testing --
+		// for testing
 		static TimePoint timePointFromTm(const std::tm& tm) {
 			return TimePoint(tm.tm_hour, tm.tm_min);
 		}
@@ -38,6 +32,7 @@ class SystemClock : public IClock {
 
 		static int daysSince1970FromTm(const std::tm& tm) {
 			std::tm midnight = tm;
+			// set hours, mins, secs to 0
 			midnight.tm_hour = 0;
 			midnight.tm_min = 0;
 			midnight.tm_sec = 0;
