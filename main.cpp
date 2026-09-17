@@ -4,6 +4,8 @@
 #include "src/domain/AlarmManager.h"
 #include "src/domain/AlarmScheduler.h"
 #include "src/domain/Alarm.h"
+#include "src/domain/PuzzleFactory.h"
+#include "src/puzzles/RandomNumberGenerator.h"
 #include "src/types/PuzzleType.h"
 #include "src/types/Days.h"
 
@@ -24,16 +26,19 @@ int main() {
 	storage.addAlarmToStoredAlarms(a1);
 	AlarmManager manager(clock, storage);
 	manager.getAlarmsFromStorage();
+	manager.getDismissedAlarmIdsFromStorage();
 
 	LvglScheduler scheduler;
+	RandomNumberGenerator rng;
+	PuzzleFactory puzzleFactory(rng);
+	LvglRouter router(clock, manager, scheduler, puzzleFactory);
+
 	AlarmScheduler alarmScheduler(manager, clock, scheduler);
-	// no ringing screen yet, so just dismiss a fired alarm for the day
-	alarmScheduler.setOnAlarmDue([&manager](const Alarm& alarm) {
-		manager.dismissAlarm(alarm.getId());
+	// a due alarm opens the ringing screen; it stays armed until resolved
+	alarmScheduler.setOnAlarmDue([&router](const Alarm& alarm) {
+		router.navigateTo(ScreenType::Ringing, alarm.getId());
 	});
 	alarmScheduler.start();
-
-	LvglRouter router(clock, manager);
 
 	router.navigateTo(ScreenType::Home);
 

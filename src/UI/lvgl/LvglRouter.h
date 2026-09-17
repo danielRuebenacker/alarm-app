@@ -3,26 +3,34 @@
 
 #include "../../interfaces/IRouter.h"
 #include "../../interfaces/IClock.h"
+#include "../../interfaces/IScheduler.h"
 #include "../../types/ScreenType.h"
 #include "../../types/TimePoint.h"
 #include "../../domain/AlarmManager.h"
+#include "../../domain/PuzzleFactory.h"
 
 // views
 #include "../views/View.h"
 #include "LvglHomeScreenView.h"
 #include "LvglAlarmListView.h"
 #include "LvglAlarmConfigView.h"
+#include "LvglRingingView.h"
+#include "LvglPuzzleView.h"
 
 // presenters
 #include "../presenters/Presenter.h"
 #include "../presenters/HomeScreenPresenter.h"
 #include "../presenters/AlarmListPresenter.h"
 #include "../presenters/AlarmConfigPresenter.h"
+#include "../presenters/RingingPresenter.h"
+#include "../presenters/PuzzlePresenter.h"
 
 class LvglRouter : public IRouter {
   private:
 	IClock& clock_;
 	AlarmManager& manager_;
+	IScheduler& scheduler_;
+	PuzzleFactory& puzzleFactory_;
 
 	std::unique_ptr<View> currentView_;
 	std::unique_ptr<Presenter> currentPresenter_;
@@ -35,7 +43,8 @@ class LvglRouter : public IRouter {
 	}
 
   public:
-	LvglRouter(IClock& clock, AlarmManager& manager) : clock_(clock), manager_(manager) {
+	LvglRouter(IClock& clock, AlarmManager& manager, IScheduler& scheduler, PuzzleFactory& puzzleFactory)
+		: clock_(clock), manager_(manager), scheduler_(scheduler), puzzleFactory_(puzzleFactory) {
 		clockTimer_ = lv::Timer::create<&LvglRouter::onClockTick>(1000, this);
 	}
 
@@ -78,8 +87,24 @@ class LvglRouter : public IRouter {
 				currentPresenter_ = std::move(alarmConfigPresenter);
 				break;
 			}
-            case ScreenType::Ringing:
-                break;
+			case ScreenType::Ringing: {
+				auto ringingView = std::make_unique<LvglRingingView>();
+				auto ringingPresenter = std::make_unique<RingingPresenter>(
+					*ringingView, *this, manager_, targetAlarmId);
+
+				currentView_ = std::move(ringingView);
+				currentPresenter_ = std::move(ringingPresenter);
+				break;
+			}
+			case ScreenType::Puzzle: {
+				auto puzzleView = std::make_unique<LvglPuzzleView>();
+				auto puzzlePresenter = std::make_unique<PuzzlePresenter>(
+					*puzzleView, *this, manager_, scheduler_, puzzleFactory_, targetAlarmId);
+
+				currentView_ = std::move(puzzleView);
+				currentPresenter_ = std::move(puzzlePresenter);
+				break;
+			}
             default:
 				break;
 		}

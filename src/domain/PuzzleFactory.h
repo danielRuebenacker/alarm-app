@@ -10,9 +10,10 @@ class PuzzleFactory {
     RandomNumberGenerator& rd_;
 
 	public:
-        PuzzleFactory(RandomNumberGenerator& rd) : rd_(rd) {}
+	PuzzleFactory(RandomNumberGenerator& rd) : rd_(rd) {}
+		virtual ~PuzzleFactory() = default;
 
-		std::unique_ptr<IPuzzle> createPuzzle(PuzzleType type) {
+		virtual std::unique_ptr<IPuzzle> createPuzzle(PuzzleType type) {
 			switch(type) {
 				case PuzzleType::MATHS:
 					return std::make_unique<EasyMathPuzzle>(rd_);
