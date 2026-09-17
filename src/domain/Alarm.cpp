@@ -106,7 +106,7 @@ std::chrono::milliseconds Alarm::getDurationUntilRing(const TimePoint& now, cons
 }
 
 bool Alarm::snoozePossible() const {
-	return (currentNoSnoozes <= maxSnoozes_);
+	return (currentNoSnoozes < maxSnoozes_);
 };
 
 void Alarm::turnOff() {

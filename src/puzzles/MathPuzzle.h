@@ -6,16 +6,16 @@
 
 class MathPuzzle : public IPuzzle {
     public:
-        virtual std::string toString() const = 0;
+        std::string toString() const override = 0;
 
         bool verifySolution(const PuzzleResponse &userAnswer) override {
             // get const pointer to value
             const int* val = std::get_if<int>(&userAnswer.value);
-            // dereference
-            if (*val == correctAnswer) {
-                return true;
+            if (!val) {
+                return false;
             }
-            return false;
+            // dereference
+            return *val == correctAnswer;
         }
     protected:
         int correctAnswer;
