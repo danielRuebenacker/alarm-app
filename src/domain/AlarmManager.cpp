@@ -19,6 +19,7 @@ void AlarmManager::addAlarm(const Alarm& alarm) {
 
     // save!
     storage_.saveAlarms(alarms);
+    notifyChanged();
 }
 
 void AlarmManager::getAlarmsFromStorage() {
@@ -33,6 +34,7 @@ void AlarmManager::getAlarmsFromStorage() {
         if (alarm.getId() > maxId) maxId = alarm.getId();
 	}
     Alarm::setNextId(maxId + 1);
+    notifyChanged();
 }
 
 void AlarmManager::getDismissedAlarmIdsFromStorage() {
@@ -41,27 +43,44 @@ void AlarmManager::getDismissedAlarmIdsFromStorage() {
 	dismissedAlarmIds = loadedDismissed;
 }
 
-const Alarm* AlarmManager::getNextActiveAlarm() {
+const Alarm* AlarmManager::findNextActiveAlarm(int& minutesOut) {
     TimePoint now = clock_.now();
     Days::Day currentDay = clock_.getCurrentDay();
     int shortestTimeDiff = std::numeric_limits<int>::max();
     const Alarm* nextAlarm = nullptr;
 
     for (const Alarm &alarm : alarms) {
+	  if (!alarm.isActive()) continue;
+
 	  // if an alarm is closer, put it as the shortest
 	  // have to factor in dismissed alarms!! alarms are only dismissed for one day!!
 	  int minsUntilRingNoDismiss = alarm.getMinutesUntilRing(now, currentDay);
 	  int actualTimeUntilRing = wasAlarmDismissed(alarm.getId())
 		? minsUntilRingNoDismiss + TimePoint::DAY_MINUTES
 		: minsUntilRingNoDismiss;
-			
-        if (alarm.isActive() &&
-            actualTimeUntilRing < shortestTimeDiff) {
+
+        if (actualTimeUntilRing < shortestTimeDiff) {
             shortestTimeDiff = actualTimeUntilRing;
             nextAlarm = &alarm;
         }
     }
+
+    minutesOut = shortestTimeDiff;
     return nextAlarm;
+}
+
+const Alarm* AlarmManager::getNextActiveAlarm() {
+    int minutesOut = 0;
+    return findNextActiveAlarm(minutesOut);
+}
+
+std::chrono::milliseconds AlarmManager::getDurationUntilNextRing() {
+    int minutesOut = 0;
+    if (!findNextActiveAlarm(minutesOut)) {
+        return std::chrono::milliseconds::max();
+    }
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::minutes(minutesOut));
 }
 
 void AlarmManager::dismissAlarm(int alarmId) {
@@ -69,6 +88,8 @@ void AlarmManager::dismissAlarm(int alarmId) {
 	if (!alarm) return;
 
     dismissedAlarmIds.push_back(alarmId);
+    storage_.saveDismissed(dismissedAlarmIds);
+    notifyChanged();
 }
 
 void AlarmManager::deleteAlarm(int alarmId) {
@@ -76,6 +97,8 @@ void AlarmManager::deleteAlarm(int alarmId) {
 	while (it != alarms.end()) {
 		if (it->getId() == alarmId) {
 			it = alarms.erase(it);
+			storage_.saveAlarms(alarms);
+			notifyChanged();
 			// since id unique
 			break;
 		} else {
@@ -92,7 +115,12 @@ Alarm* AlarmManager::getAlarmById(int alarmId) {
 }
 
 bool AlarmManager::snoozeAlarm(Alarm& alarm) {
-	return alarm.snooze();
+	bool snoozed = alarm.snooze();
+	if (snoozed) {
+		storage_.saveAlarms(alarms);
+		notifyChanged();
+	}
+	return snoozed;
 }
 
 bool AlarmManager::wasAlarmDismissed(int alarmId) {
@@ -103,7 +131,19 @@ bool AlarmManager::wasAlarmDismissed(int alarmId) {
 }
 
 void AlarmManager::toggleAlarm(int alarmId) {
-	if (Alarm* a = getAlarmById(alarmId)) { a->toggle(); storage_.saveAlarms(alarms); }
+	if (Alarm* a = getAlarmById(alarmId)) {
+		a->toggle();
+		storage_.saveAlarms(alarms);
+		notifyChanged();
+	}
+}
+
+void AlarmManager::setOnAlarmsChanged(std::function<void()> callback) {
+	onChanged_ = std::move(callback);
+}
+
+void AlarmManager::notifyChanged() {
+	if (onChanged_) onChanged_();
 }
 
 Alarm* AlarmManager::getMostRecentlyMissedAlarm(int daysFrom1970ToSleepDay, const Days::Day& sleepDay) {

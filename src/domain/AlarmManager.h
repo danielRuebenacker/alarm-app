@@ -1,4 +1,6 @@
 #pragma once
+#include <chrono>
+#include <functional>
 #include <memory>
 #include <vector>
 #include "./Alarm.h"
@@ -14,6 +16,14 @@ class AlarmManager {
 		std::vector<Alarm> alarms;
         std::vector<int> dismissedAlarmIds;
 		void makeActiveAlarms();
+
+		// returns the soonest alarm and writes the actual minutes until it rings
+		// (accounting for alarms dismissed for the day) into minutesOut
+		const Alarm* findNextActiveAlarm(int& minutesOut);
+
+		// notified whenever alarm data changes (so the scheduler can re-arm)
+		std::function<void()> onChanged_;
+		void notifyChanged();
 	public:
 		AlarmManager(const IClock& clock, IStorage& storage);
 
@@ -23,6 +33,9 @@ class AlarmManager {
 		void getAlarmsFromStorage();
 		void getDismissedAlarmIdsFromStorage();
 		const Alarm* getNextActiveAlarm();
+		std::chrono::milliseconds getDurationUntilNextRing();
+
+		void setOnAlarmsChanged(std::function<void()> callback);
 
 		void addAlarm(const Alarm& alarm);
 		void dismissAlarm(int alarmId);
