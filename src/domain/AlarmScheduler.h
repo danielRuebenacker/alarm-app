@@ -2,15 +2,18 @@
 #include "../interfaces/IScheduler.h"
 #include "../interfaces/IClock.h"
 #include "../domain/AlarmManager.h"
+#include <chrono>
 #include <functional>
+#include <utility>
 
 
 class AlarmScheduler {
 public:
 	AlarmScheduler(AlarmManager& alarmManager, IClock& clock, IScheduler& scheduler)
-		: alarmManager_(alarmManager), clock_(clock), scheduler_(scheduler) {
-
-		}
+		: scheduler_(scheduler), alarmManager_(alarmManager), clock_(clock) {
+		// re-arm automatically whenever alarm data changes
+		alarmManager_.setOnAlarmsChanged([this]() { rescheduleNext(); });
+	}
 
 	void setOnAlarmDue(std::function<void(const Alarm&)> cb) { onAlarmDue_ = std::move(cb); }
 
@@ -23,17 +26,17 @@ private:
 		scheduler_.cancel(currentHandle_);
 		currentHandle_ = IScheduler::kInvalidHandle;
 
-		const Alarm* next = alarmManager_.getNextActiveAlarm();
-		if (!next) return; // nothing coming
+		// the manager owns dismissed-for-the-day state, so ask it for the
+		// actual delay rather than recomputing from the alarm alone
+		auto delay = alarmManager_.getDurationUntilNextRing();
+		if (delay == std::chrono::milliseconds::max()) return; // nothing coming
 
-		// convert to milliseconds
-		auto delay = next->getDurationUntilRing(clock_.now(), clock_.getCurrentDay());
 		currentHandle_ = scheduler_.scheduleOnce(delay, [this]() { onTimerFired(); });
 	}
 
 	void onTimerFired() {
 		const Alarm* alarm = alarmManager_.getNextActiveAlarm();
-		if (alarm && alarm->shouldTrigger(clock_.now())) {
+		if (alarm && alarm->shouldTrigger(clock_.now(), clock_.getCurrentDay())) {
 			if (onAlarmDue_) onAlarmDue_(*alarm);
 		}
 		rescheduleNext();

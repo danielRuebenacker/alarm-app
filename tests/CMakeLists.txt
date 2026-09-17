@@ -4,6 +4,7 @@ add_executable(run_project_tests
 	types/TimePointTest.cpp
 	domain/AlarmTest.cpp
 	domain/AlarmManagerTest.cpp
+	domain/AlarmSchedulerTest.cpp
 	domain/MockAlarm.cpp
 	platform/SystemClockTest.cpp
 )
