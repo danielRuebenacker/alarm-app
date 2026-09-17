@@ -26,10 +26,15 @@ class PuzzlePresenter : public Presenter {
 	IScheduler::TimerHandle tickHandle_ = IScheduler::kInvalidHandle;
 
 	void scheduleTick() {
-		tickHandle_ = scheduler_.scheduleOnce(std::chrono::seconds(1), [this]() { onTick(); });
+		// never keep two countdown timers alive at once
+		scheduler_.cancel(tickHandle_);
+		tickHandle_ = scheduler_.scheduleOnce(std::chrono::seconds(1),
+											 [this]() { onCountdownTick(); });
 	}
 
-	void onTick() {
+	// NOTE: deliberately not Presenter::onTick(): the router's clock tick calls
+	// that every second and must not drive (or duplicate) the countdown
+	void onCountdownTick() {
 		--secondsLeft_;
 		if (secondsLeft_ <= 0) {
 			// no input in time: ring again
@@ -39,6 +44,13 @@ class PuzzlePresenter : public Presenter {
 			return;
 		}
 		view_.updateTimeoutBar(secondsLeft_ * 100 / totalSeconds_);
+		scheduleTick();
+	}
+
+	// any key press buys back the full solving time
+	void onUserInput() {
+		secondsLeft_ = totalSeconds_;
+		view_.updateTimeoutBar(100);
 		scheduleTick();
 	}
 
@@ -68,6 +80,7 @@ class PuzzlePresenter : public Presenter {
 		}
 
 		view_.setOnSubmitCallback([this](const PuzzleResponse& response) { onSubmit(response); });
+		view_.setOnAnyInputCallback([this]() { onUserInput(); });
 
 		view_.updateTimeoutBar(100);
 		scheduleTick();

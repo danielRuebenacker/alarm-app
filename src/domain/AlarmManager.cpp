@@ -1,4 +1,5 @@
 #include "AlarmManager.h"
+#include "../interfaces/ISound.h"
 #include <algorithm>
 #include <limits>
 
@@ -114,7 +115,10 @@ void AlarmManager::dismissAlarm(int alarmId) {
 	if (!alarm) return;
 
     dismissedAlarmIds.push_back(alarmId);
-    if (ringingAlarmId_ == alarmId) ringingAlarmId_ = -1;
+    if (ringingAlarmId_ == alarmId) {
+        ringingAlarmId_ = -1;
+        if (sound_) sound_->stopRinging();
+    }
     clearSnoozeIfMatches(alarmId);
     storage_.saveDismissed(dismissedAlarmIds);
     notifyChanged();
@@ -125,7 +129,10 @@ void AlarmManager::deleteAlarm(int alarmId) {
 	while (it != alarms.end()) {
 		if (it->getId() == alarmId) {
 			it = alarms.erase(it);
-			if (ringingAlarmId_ == alarmId) ringingAlarmId_ = -1;
+			if (ringingAlarmId_ == alarmId) {
+				ringingAlarmId_ = -1;
+				if (sound_) sound_->stopRinging();
+			}
 			clearSnoozeIfMatches(alarmId);
 			storage_.saveAlarms(alarms);
 			notifyChanged();
@@ -149,7 +156,10 @@ bool AlarmManager::snoozeAlarm(int alarmId) {
 	if (!alarm || !alarm->snooze()) return false;
 
 	// stop ringing and arm a one-off snooze at now + snoozeMinutes
-	if (ringingAlarmId_ == alarmId) ringingAlarmId_ = -1;
+	if (ringingAlarmId_ == alarmId) {
+		ringingAlarmId_ = -1;
+		if (sound_) sound_->stopRinging();
+	}
 	snoozeAlarmId_ = alarmId;
 	snoozeDeadlineMinutes_ = absoluteMinutesNow() + alarm->getSnoozeMinutes();
 
@@ -169,7 +179,10 @@ void AlarmManager::toggleAlarm(int alarmId) {
 	if (Alarm* a = getAlarmById(alarmId)) {
 		a->toggle();
 		if (!a->isActive()) {
-			if (ringingAlarmId_ == alarmId) ringingAlarmId_ = -1;
+			if (ringingAlarmId_ == alarmId) {
+				ringingAlarmId_ = -1;
+				if (sound_) sound_->stopRinging();
+			}
 			clearSnoozeIfMatches(alarmId);
 		}
 		storage_.saveAlarms(alarms);
@@ -186,9 +199,15 @@ int AlarmManager::getRingingAlarmId() const {
 }
 
 void AlarmManager::startRinging(int alarmId) {
+	bool wasRinging = isRinging();
 	ringingAlarmId_ = alarmId;
 	// a snooze that is now firing is no longer pending
 	clearSnoozeIfMatches(alarmId);
+	if (!wasRinging && sound_) sound_->ring();
+}
+
+void AlarmManager::setSound(ISound& sound) {
+	sound_ = &sound;
 }
 
 bool AlarmManager::isSnoozing() const {

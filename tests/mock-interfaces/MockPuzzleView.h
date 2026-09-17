@@ -11,6 +11,7 @@ class MockPuzzleView : public IPuzzleView {
 	int loadCount = 0;
 
 	std::function<void(const PuzzleResponse&)> onSubmit;
+	std::function<void()> onAnyInput;
 
 	void updateTimeoutBar(int percentLeft) override { lastPercent = percentLeft; }
 
@@ -23,7 +24,15 @@ class MockPuzzleView : public IPuzzleView {
 		onSubmit = std::move(callback);
 	}
 
+	void setOnAnyInputCallback(std::function<void()> callback) override {
+		onAnyInput = std::move(callback);
+	}
+
 	void submit(const PuzzleResponse& response) {
 		if (onSubmit) onSubmit(response);
+	}
+
+	void pressAnyKey() {
+		if (onAnyInput) onAnyInput();
 	}
 };

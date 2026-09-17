@@ -13,6 +13,13 @@ class LvglPuzzleView : public IPuzzleView {
 	lv::Keyboard keyboard_;
 
 	std::function<void(const PuzzleResponse&)> onSubmitCallback_;
+	std::function<void()> onAnyInputCallback_;
+
+	void handleAnyInput() {
+		// copy before invoking: the callback might destroy this view
+		auto callback = onAnyInputCallback_;
+		if (callback) callback();
+	}
 
 	void handleSubmit() {
 		// read everything we need before invoking: the callback may destroy
@@ -55,6 +62,11 @@ class LvglPuzzleView : public IPuzzleView {
 			.fill_width()
 			.height(220)
 			.align_bottom();
+
+		// any key press (on-screen keyboard button, physical key or backspace)
+		// counts as activity and resets the timeout
+		keyboard_.on<&LvglPuzzleView::handleAnyInput>(LV_EVENT_VALUE_CHANGED, this);
+		answerInput_.on<&LvglPuzzleView::handleAnyInput>(LV_EVENT_KEY, this);
 	}
 
 	void updateTimeoutBar(int percentLeft) override {
@@ -68,5 +80,9 @@ class LvglPuzzleView : public IPuzzleView {
 
 	void setOnSubmitCallback(std::function<void(const PuzzleResponse& response)> callback) override {
 		onSubmitCallback_ = std::move(callback);
+	}
+
+	void setOnAnyInputCallback(std::function<void()> callback) override {
+		onAnyInputCallback_ = std::move(callback);
 	}
 };

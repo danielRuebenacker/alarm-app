@@ -7,11 +7,16 @@
 #include "../interfaces/IStorage.h"
 #include "../interfaces/IClock.h"
 
+class ISound;
+
 // stores alarms, gets/sets, returns next active alarm, can cancel alarm
 class AlarmManager {
 	private:
         const IClock&  clock_;
         IStorage&  storage_;
+
+		// optional audio backend; ringing state drives ring()/stopRinging()
+		ISound* sound_ = nullptr;
 
 		std::vector<Alarm> alarms;
         std::vector<int> dismissedAlarmIds;
@@ -46,6 +51,10 @@ class AlarmManager {
 		std::chrono::milliseconds getDurationUntilNextRing();
 
 		void setOnAlarmsChanged(std::function<void()> callback);
+
+		// plug in an audio backend; it rings whenever an alarm starts ringing
+		// and stops as soon as the ringing is resolved
+		void setSound(ISound& sound);
 
 		void addAlarm(const Alarm& alarm);
 		void dismissAlarm(int alarmId);

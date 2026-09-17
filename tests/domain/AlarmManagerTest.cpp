@@ -2,6 +2,7 @@
 
 #include "../mock-interfaces/MockClock.h"
 #include "../mock-interfaces/MockStorage.h"
+#include "../mock-interfaces/MockSound.h"
 
 #include "src/domain/AlarmManager.h"
 #include "MockAlarm.h"
@@ -203,5 +204,48 @@ TEST_CASE("Ringing and snooze state") {
         CHECK_FALSE(manager.snoozeAlarm(alarm.getId()));
         CHECK(manager.isRinging());
         CHECK_FALSE(manager.isSnoozing());
+    }
+}
+
+TEST_CASE("Alarm sound follows ringing state") {
+    MockClock clock;
+    MockStorage storage;
+    MockSound sound;
+    AlarmManager manager(clock, storage);
+    manager.setSound(sound);
+
+    clock.setTime(9, 30);
+    clock.setCurrentDay(Days::Monday);
+    clock.setDaysSince1970(100);
+
+    Alarm::setNextId(70);
+    Alarm alarm = createMockAlarm(9, 30);
+    alarm.turnOn();
+    alarm.setSnoozeMinutes(5);
+    alarm.setMaxSnoozes(3);
+    manager.addAlarm(alarm);
+
+    SUBCASE("ringing starts the sound") {
+        manager.startRinging(alarm.getId());
+        CHECK(sound.ringCount == 1);
+        CHECK(sound.stopCount == 0);
+    }
+
+    SUBCASE("snoozing stops the sound") {
+        manager.startRinging(alarm.getId());
+        REQUIRE(manager.snoozeAlarm(alarm.getId()));
+        CHECK(sound.stopCount == 1);
+    }
+
+    SUBCASE("dismissing stops the sound") {
+        manager.startRinging(alarm.getId());
+        manager.dismissAlarm(alarm.getId());
+        CHECK(sound.stopCount == 1);
+    }
+
+    SUBCASE("turning the ringing alarm off stops the sound") {
+        manager.startRinging(alarm.getId());
+        manager.toggleAlarm(alarm.getId());
+        CHECK(sound.stopCount == 1);
     }
 }

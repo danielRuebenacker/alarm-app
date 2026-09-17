@@ -14,4 +14,6 @@ class IPuzzleView : public View {
         virtual void updateTimeoutBar(int percentLeft) = 0;
         virtual void loadPuzzle(const PuzzleType& puzzleType, const IPuzzle& puzzle) = 0;
         virtual void setOnSubmitCallback(std::function<void(const PuzzleResponse& response)> callback) = 0;
+        // fired on any key press; the presenter uses it to reset the timeout
+        virtual void setOnAnyInputCallback(std::function<void()> callback) = 0;
 };

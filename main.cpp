@@ -10,6 +10,7 @@
 #include "src/types/Days.h"
 
 #include "src/platform/SystemClock.h"
+#include "src/platform/NullSound.h"
 #include "tests/mock-interfaces/MockStorage.h"
 
 #define SCR_WIDTH 320
@@ -27,6 +28,10 @@ int main() {
 	AlarmManager manager(clock, storage);
 	manager.getAlarmsFromStorage();
 	manager.getDismissedAlarmIdsFromStorage();
+
+	// silent backend for now; swap for a real ISound to actually make noise
+	NullSound sound;
+	manager.setSound(sound);
 
 	LvglScheduler scheduler;
 	RandomNumberGenerator rng;

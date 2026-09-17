@@ -86,3 +86,58 @@ TEST_CASE("PuzzlePresenter returns to the ringing screen on timeout") {
 	CHECK(router.navigations.back().alarmId == alarm.getId());
 	CHECK(scheduler.pendingCount() == 0);
 }
+
+TEST_CASE("PuzzlePresenter ignores the router clock tick") {
+	MockClock clock;
+	MockStorage storage;
+	MockScheduler scheduler;
+	MockRouter router;
+	MockPuzzleView view;
+	AlarmManager manager(clock, storage);
+
+	Alarm alarm = ringingAlarm(clock, manager);
+	RandomNumberGenerator rng;
+	MockPuzzleFactory factory(std::make_unique<FixedPuzzle>(42), rng);
+
+	PuzzlePresenter presenter(view, router, manager, scheduler, factory, alarm.getId(), 10);
+	REQUIRE(scheduler.pendingCount() == 1);
+
+	// the router ticks the active presenter every second; this must not drive
+	// (or duplicate) the puzzle countdown
+	presenter.onTick();
+
+	CHECK(view.lastPercent == 100);
+	CHECK(scheduler.pendingCount() == 1);
+	CHECK(router.navigations.empty());
+}
+
+TEST_CASE("PuzzlePresenter resets the timeout on any key press") {
+	MockClock clock;
+	MockStorage storage;
+	MockScheduler scheduler;
+	MockRouter router;
+	MockPuzzleView view;
+	AlarmManager manager(clock, storage);
+
+	Alarm alarm = ringingAlarm(clock, manager);
+	RandomNumberGenerator rng;
+	MockPuzzleFactory factory(std::make_unique<FixedPuzzle>(42), rng);
+
+	PuzzlePresenter presenter(view, router, manager, scheduler, factory, alarm.getId(), 2);
+
+	scheduler.fireNext();
+	CHECK(view.lastPercent == 50);
+
+	view.pressAnyKey();
+	CHECK(view.lastPercent == 100);
+	REQUIRE(scheduler.pendingCount() == 1);
+
+	// the clock has been reset, so two fresh ticks are needed to time out
+	scheduler.fireNext();
+	CHECK(view.lastPercent == 50);
+	CHECK(router.navigations.empty());
+
+	scheduler.fireNext();
+	REQUIRE(router.lastScreen() == ScreenType::Ringing);
+	CHECK(scheduler.pendingCount() == 0);
+}

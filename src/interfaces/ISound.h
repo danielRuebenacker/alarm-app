@@ -1,3 +1,5 @@
+#pragma once
+
 // interface for sound functions: ring, stop
 class ISound {
 	public:

@@ -28,6 +28,13 @@ class LvglRingingView : public IAlarmRingingView {
 	LvglRingingView(lv::ObjectView parent = lv::screen_active()) {
 		auto root = lv::vbox(parent).fill().center_content().gap(24);
 
+		// ringing is alarming: paint the whole screen red with white text
+		lv_obj_set_style_bg_color(root.get(), lv_color_hex(0xD32F2F), LV_PART_MAIN);
+		lv_obj_set_style_bg_opa(root.get(), LV_OPA_COVER, LV_PART_MAIN);
+		lv_obj_set_style_text_color(root.get(), lv_color_hex(0xFFFFFF), LV_PART_MAIN);
+		lv_obj_set_style_border_width(root.get(), 0, LV_PART_MAIN);
+		lv_obj_set_style_radius(root.get(), 0, LV_PART_MAIN);
+
 		lv::Label::create(root)
 			.text("ALARM RINGING")
 			.font(&lv_font_montserrat_24);
