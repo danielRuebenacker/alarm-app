@@ -3,8 +3,8 @@
 class MockClock : public IClock {
 private:
     TimePoint now_ = { 0, 0 };
-    Days::Day currentDay;
-    int daysSince1970;
+    Days::Day currentDay = Days::Monday;
+    int daysSince1970 = 0;
 
 public:
     void setTime(int hour, int min) {

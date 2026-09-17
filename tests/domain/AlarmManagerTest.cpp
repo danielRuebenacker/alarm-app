@@ -136,10 +136,72 @@ TEST_CASE("Test getNextActiveAlarm") {
 		REQUIRE(next != nullptr);
 		CHECK(next->getId() == tuesWedMorning.getId());
 		
-		// dismiss this alarm also (should then loop back around to Tuesday evening)
-		manager.dismissAlarm(tuesWedMorning.getId());
-		next = manager.getNextActiveAlarm();
-		REQUIRE(next != nullptr);
-		CHECK(next->getId() == monTuesEvening.getId());
+        // dismiss this alarm also (should then loop back around to Tuesday evening)
+        manager.dismissAlarm(tuesWedMorning.getId());
+        next = manager.getNextActiveAlarm();
+        REQUIRE(next != nullptr);
+        CHECK(next->getId() == monTuesEvening.getId());
+    }
+}
+
+TEST_CASE("Ringing and snooze state") {
+    MockClock clock;
+    MockStorage storage;
+    AlarmManager manager(clock, storage);
+
+    clock.setTime(9, 30);
+    clock.setCurrentDay(Days::Monday);
+    clock.setDaysSince1970(100);
+
+    Alarm::setNextId(50);
+    Alarm alarm = createMockAlarm(9, 30);
+    alarm.turnOn();
+    alarm.setSnoozeMinutes(5);
+    alarm.setMaxSnoozes(3);
+    manager.addAlarm(alarm);
+
+    SUBCASE("A ringing alarm is excluded from the schedule until resolved") {
+        manager.startRinging(alarm.getId());
+        CHECK(manager.isRinging());
+        CHECK(manager.getRingingAlarmId() == alarm.getId());
+        // the only alarm is ringing, so nothing may be armed
+        CHECK(manager.getNextActiveAlarm() == nullptr);
+        CHECK(manager.getDurationUntilNextRing() == std::chrono::milliseconds::max());
+    }
+
+    SUBCASE("Snoozing clears ringing and arms the snooze delay") {
+        manager.startRinging(alarm.getId());
+        REQUIRE(manager.snoozeAlarm(alarm.getId()));
+        CHECK_FALSE(manager.isRinging());
+        CHECK(manager.isSnoozing());
+        const Alarm* next = manager.getNextActiveAlarm();
+        REQUIRE(next != nullptr);
+        CHECK(next->getId() == alarm.getId());
+        CHECK(manager.getDurationUntilNextRing() == std::chrono::minutes(5));
+    }
+
+    SUBCASE("A reached snooze deadline reports the alarm as due now") {
+        manager.startRinging(alarm.getId());
+        REQUIRE(manager.snoozeAlarm(alarm.getId()));
+        clock.setTime(9, 35);
+        REQUIRE(manager.getNextActiveAlarm() != nullptr);
+        CHECK(manager.getNextActiveAlarm()->getId() == alarm.getId());
+        CHECK(manager.getDurationUntilNextRing() == std::chrono::minutes(0));
+    }
+
+    SUBCASE("Dismissing a ringing alarm clears ringing and dismisses it") {
+        manager.startRinging(alarm.getId());
+        manager.dismissAlarm(alarm.getId());
+        CHECK_FALSE(manager.isRinging());
+        CHECK(manager.wasAlarmDismissed(alarm.getId()));
+    }
+
+    SUBCASE("Snooze is refused when no snoozes remain") {
+        alarm.setMaxSnoozes(0);
+        manager.addAlarm(alarm);
+        manager.startRinging(alarm.getId());
+        CHECK_FALSE(manager.snoozeAlarm(alarm.getId()));
+        CHECK(manager.isRinging());
+        CHECK_FALSE(manager.isSnoozing());
     }
 }

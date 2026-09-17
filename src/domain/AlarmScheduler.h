@@ -36,7 +36,17 @@ private:
 
 	void onTimerFired() {
 		const Alarm* alarm = alarmManager_.getNextActiveAlarm();
-		if (alarm && alarm->shouldTrigger(clock_.now(), clock_.getCurrentDay())) {
+		if (!alarm) {
+			rescheduleNext();
+			return;
+		}
+
+		// a due snooze fires even if the alarm's own time no longer matches
+		// today's mask (it may have crossed midnight)
+		if (alarmManager_.isSnoozing() ||
+			alarm->shouldTrigger(clock_.now(), clock_.getCurrentDay())) {
+			// mark it ringing so it is not re-armed until resolved
+			alarmManager_.startRinging(alarm->getId());
 			if (onAlarmDue_) onAlarmDue_(*alarm);
 		}
 		rescheduleNext();

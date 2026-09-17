@@ -43,7 +43,31 @@ void AlarmManager::getDismissedAlarmIdsFromStorage() {
 	dismissedAlarmIds = loadedDismissed;
 }
 
+int AlarmManager::absoluteMinutesNow() const {
+    return (clock_.getDaysSince1970() * TimePoint::DAY_MINUTES) +
+           clock_.now().minutesSinceMidnight();
+}
+
+void AlarmManager::clearSnoozeIfMatches(int alarmId) {
+    if (snoozeAlarmId_ == alarmId) {
+        snoozeAlarmId_ = -1;
+        snoozeDeadlineMinutes_ = -1;
+    }
+}
+
 const Alarm* AlarmManager::findNextActiveAlarm(int& minutesOut) {
+    // an active snooze takes precedence over the normal schedule
+    if (snoozeAlarmId_ != -1) {
+        Alarm* snoozed = getAlarmById(snoozeAlarmId_);
+        if (snoozed && snoozed->isActive()) {
+            int remaining = snoozeDeadlineMinutes_ - absoluteMinutesNow();
+            minutesOut = remaining > 0 ? remaining : 0;
+            return snoozed;
+        }
+        // stale snooze (alarm removed or disabled)
+        clearSnoozeIfMatches(snoozeAlarmId_);
+    }
+
     TimePoint now = clock_.now();
     Days::Day currentDay = clock_.getCurrentDay();
     int shortestTimeDiff = std::numeric_limits<int>::max();
@@ -51,6 +75,8 @@ const Alarm* AlarmManager::findNextActiveAlarm(int& minutesOut) {
 
     for (const Alarm &alarm : alarms) {
 	  if (!alarm.isActive()) continue;
+	  // the alarm currently ringing must not be re-armed until resolved
+	  if (alarm.getId() == ringingAlarmId_) continue;
 
 	  // if an alarm is closer, put it as the shortest
 	  // have to factor in dismissed alarms!! alarms are only dismissed for one day!!
@@ -88,6 +114,8 @@ void AlarmManager::dismissAlarm(int alarmId) {
 	if (!alarm) return;
 
     dismissedAlarmIds.push_back(alarmId);
+    if (ringingAlarmId_ == alarmId) ringingAlarmId_ = -1;
+    clearSnoozeIfMatches(alarmId);
     storage_.saveDismissed(dismissedAlarmIds);
     notifyChanged();
 }
@@ -97,6 +125,8 @@ void AlarmManager::deleteAlarm(int alarmId) {
 	while (it != alarms.end()) {
 		if (it->getId() == alarmId) {
 			it = alarms.erase(it);
+			if (ringingAlarmId_ == alarmId) ringingAlarmId_ = -1;
+			clearSnoozeIfMatches(alarmId);
 			storage_.saveAlarms(alarms);
 			notifyChanged();
 			// since id unique
@@ -114,13 +144,18 @@ Alarm* AlarmManager::getAlarmById(int alarmId) {
 	return nullptr;
 }
 
-bool AlarmManager::snoozeAlarm(Alarm& alarm) {
-	bool snoozed = alarm.snooze();
-	if (snoozed) {
-		storage_.saveAlarms(alarms);
-		notifyChanged();
-	}
-	return snoozed;
+bool AlarmManager::snoozeAlarm(int alarmId) {
+	Alarm* alarm = getAlarmById(alarmId);
+	if (!alarm || !alarm->snooze()) return false;
+
+	// stop ringing and arm a one-off snooze at now + snoozeMinutes
+	if (ringingAlarmId_ == alarmId) ringingAlarmId_ = -1;
+	snoozeAlarmId_ = alarmId;
+	snoozeDeadlineMinutes_ = absoluteMinutesNow() + alarm->getSnoozeMinutes();
+
+	storage_.saveAlarms(alarms);
+	notifyChanged();
+	return true;
 }
 
 bool AlarmManager::wasAlarmDismissed(int alarmId) {
@@ -133,9 +168,31 @@ bool AlarmManager::wasAlarmDismissed(int alarmId) {
 void AlarmManager::toggleAlarm(int alarmId) {
 	if (Alarm* a = getAlarmById(alarmId)) {
 		a->toggle();
+		if (!a->isActive()) {
+			if (ringingAlarmId_ == alarmId) ringingAlarmId_ = -1;
+			clearSnoozeIfMatches(alarmId);
+		}
 		storage_.saveAlarms(alarms);
 		notifyChanged();
 	}
+}
+
+bool AlarmManager::isRinging() const {
+	return ringingAlarmId_ != -1;
+}
+
+int AlarmManager::getRingingAlarmId() const {
+	return ringingAlarmId_;
+}
+
+void AlarmManager::startRinging(int alarmId) {
+	ringingAlarmId_ = alarmId;
+	// a snooze that is now firing is no longer pending
+	clearSnoozeIfMatches(alarmId);
+}
+
+bool AlarmManager::isSnoozing() const {
+	return snoozeAlarmId_ != -1;
 }
 
 void AlarmManager::setOnAlarmsChanged(std::function<void()> callback) {

@@ -93,3 +93,43 @@ TEST_CASE("AlarmScheduler re-arms when alarm data changes") {
 	CHECK(scheduler.pendingCount() == 1);
 	CHECK(scheduler.nextDelay() == std::chrono::minutes(30));
 }
+
+TEST_CASE("AlarmScheduler keeps a ringing alarm from re-firing") {
+	MockClock clock;
+	MockStorage storage;
+	MockScheduler scheduler;
+
+	clock.setTime(9, 0);
+	clock.setCurrentDay(Days::Monday);
+	clock.setDaysSince1970(100);
+
+	AlarmManager manager(clock, storage);
+	Alarm alarm = createMockAlarm(9, 0);
+	alarm.turnOn();
+	alarm.setSnoozeMinutes(5);
+	manager.addAlarm(alarm);
+
+	AlarmScheduler alarmScheduler(manager, clock, scheduler);
+	int firedCount = 0;
+	// deliberately does not dismiss: the alarm stays ringing
+	alarmScheduler.setOnAlarmDue([&](const Alarm&) { ++firedCount; });
+	alarmScheduler.start();
+
+	REQUIRE(scheduler.pendingCount() == 1);
+	scheduler.fireNext();
+
+	CHECK(firedCount == 1);
+	CHECK(manager.isRinging());
+	// a ringing alarm must not be re-armed
+	CHECK(scheduler.pendingCount() == 0);
+
+	// snoozing arms a one-off timer for the snooze duration
+	REQUIRE(manager.snoozeAlarm(alarm.getId()));
+	REQUIRE(scheduler.pendingCount() == 1);
+	CHECK(scheduler.nextDelay() == std::chrono::minutes(5));
+
+	// firing the snooze rings the alarm again
+	scheduler.fireNext();
+	CHECK(firedCount == 2);
+	CHECK(manager.isRinging());
+}

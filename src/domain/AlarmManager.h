@@ -17,6 +17,16 @@ class AlarmManager {
         std::vector<int> dismissedAlarmIds;
 		void makeActiveAlarms();
 
+		// the alarm currently ringing is excluded from scheduling until it is
+		// resolved (dismissed/snoozed/toggled off)
+		int ringingAlarmId_ = -1;
+
+		// active snooze: absolute minute deadline (days*1440 + minutes of day)
+		int snoozeAlarmId_ = -1;
+		int snoozeDeadlineMinutes_ = -1;
+		int absoluteMinutesNow() const;
+		void clearSnoozeIfMatches(int alarmId);
+
 		// returns the soonest alarm and writes the actual minutes until it rings
 		// (accounting for alarms dismissed for the day) into minutesOut
 		const Alarm* findNextActiveAlarm(int& minutesOut);
@@ -40,9 +50,15 @@ class AlarmManager {
 		void addAlarm(const Alarm& alarm);
 		void dismissAlarm(int alarmId);
 		void deleteAlarm(int alarmId);
-		bool snoozeAlarm(Alarm& alarm);
+		bool snoozeAlarm(int alarmId);
         bool wasAlarmDismissed(int alarmId);
 		void toggleAlarm(int alarmId);
+
+		// ringing/snooze state
+		bool isRinging() const;
+		int getRingingAlarmId() const;
+		void startRinging(int alarmId);
+		bool isSnoozing() const;
 
         Alarm* getMostRecentlyMissedAlarm(int daysFrom1970ToSleepDay, const Days::Day& sleepDay);
 };
