@@ -1,7 +1,9 @@
 #pragma once
 #include "../interfaces/IPuzzle.h"
 #include "../types/PuzzleType.h"
+#include "../puzzles/CaptchaPuzzle.h"
 #include "../puzzles/MathPuzzle.h"
+#include "../puzzles/MemoryPuzzle.h"
 
 #include <memory>
 #include <stdexcept>
@@ -17,10 +19,12 @@ class PuzzleFactory {
 			switch(type) {
 				case PuzzleType::MATHS:
 					return std::make_unique<EasyMathPuzzle>(rd_);
+				case PuzzleType::MEMORY:
+					return std::make_unique<MemoryPuzzle>(rd_);
 				case PuzzleType::CAPTCHA:
-					return nullptr;
+					return std::make_unique<CaptchaPuzzle>(rd_);
 				default:
-					throw std::invalid_argument("Unknown puzzle type requested."); 
+					throw std::invalid_argument("Unknown puzzle type requested.");
 			} 
 		}
 };
