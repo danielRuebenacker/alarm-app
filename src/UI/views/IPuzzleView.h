@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <string>
 
 #include "../../interfaces/IPuzzle.h"
 #include "../../types/PuzzleType.h"
@@ -16,4 +17,9 @@ class IPuzzleView : public View {
         virtual void setOnSubmitCallback(std::function<void(const PuzzleResponse& response)> callback) = 0;
         // fired on any key press; the presenter uses it to reset the timeout
         virtual void setOnAnyInputCallback(std::function<void()> callback) = 0;
+        // report the verdict so the view can colour/flash the answer
+        virtual void showAnswerFeedback(bool correct) = 0;
+        // content shown briefly before the puzzle is answered (e.g. the grid a
+        // memory puzzle wants memorised); the view hides it again itself
+        virtual void showHint(const std::string& hint) = 0;
 };
