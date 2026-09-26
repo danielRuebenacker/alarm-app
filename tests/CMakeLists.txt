@@ -8,6 +8,7 @@ add_executable(run_project_tests
 	domain/MockAlarm.cpp
 	platform/SystemClockTest.cpp
 	puzzles/MemoryPuzzleTest.cpp
+	puzzles/CaptchaPuzzleTest.cpp
 	UI/RingingPresenterTest.cpp
 	UI/PuzzlePresenterTest.cpp
 )
