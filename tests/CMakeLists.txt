@@ -7,6 +7,7 @@ add_executable(run_project_tests
 	domain/AlarmSchedulerTest.cpp
 	domain/MockAlarm.cpp
 	platform/SystemClockTest.cpp
+	puzzles/MemoryPuzzleTest.cpp
 	UI/RingingPresenterTest.cpp
 	UI/PuzzlePresenterTest.cpp
 )
