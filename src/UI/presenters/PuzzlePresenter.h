@@ -24,10 +24,21 @@ class PuzzlePresenter : public Presenter {
 	int secondsLeft_;
 	std::unique_ptr<IPuzzle> puzzle_;
 	IScheduler::TimerHandle tickHandle_ = IScheduler::kInvalidHandle;
+	// set once the puzzle is solved: the screen is on its way out, so further
+	// input must not restart the countdown
+	bool solved_ = false;
+
+	// how long the "correct" flash stays up before we leave the puzzle screen
+	static constexpr int kCorrectFlashMs = 800;
+
+	void cancelTick() {
+		scheduler_.cancel(tickHandle_);
+		tickHandle_ = IScheduler::kInvalidHandle;
+	}
 
 	void scheduleTick() {
 		// never keep two countdown timers alive at once
-		scheduler_.cancel(tickHandle_);
+		cancelTick();
 		tickHandle_ = scheduler_.scheduleOnce(std::chrono::seconds(1),
 											 [this]() { onCountdownTick(); });
 	}
@@ -38,8 +49,7 @@ class PuzzlePresenter : public Presenter {
 		--secondsLeft_;
 		if (secondsLeft_ <= 0) {
 			// no input in time: ring again
-			scheduler_.cancel(tickHandle_);
-			tickHandle_ = IScheduler::kInvalidHandle;
+			cancelTick();
 			router_.navigateTo(ScreenType::Ringing, alarmId_);
 			return;
 		}
@@ -49,19 +59,38 @@ class PuzzlePresenter : public Presenter {
 
 	// any key press buys back the full solving time
 	void onUserInput() {
+		if (solved_) return;
 		secondsLeft_ = totalSeconds_;
 		view_.updateTimeoutBar(100);
 		scheduleTick();
 	}
 
+	void finishSolved() {
+		tickHandle_ = IScheduler::kInvalidHandle;
+		alarmManager_.dismissAlarm(alarmId_);
+		router_.navigateTo(ScreenType::Home);
+	}
+
 	void onSubmit(const PuzzleResponse& response) {
-		if (!puzzle_ || puzzle_->verifySolution(response)) {
-			scheduler_.cancel(tickHandle_);
-			tickHandle_ = IScheduler::kInvalidHandle;
-			alarmManager_.dismissAlarm(alarmId_);
-			router_.navigateTo(ScreenType::Home);
+		// a puzzle that could not be built can never be solved, so it must not
+		// count as a pass: keep ringing instead of dismissing the alarm
+		if (!puzzle_) {
+			view_.showAnswerFeedback(false);
+			return;
 		}
-		// wrong answer: stay on the puzzle, the timeout keeps running
+
+		if (!puzzle_->verifySolution(response)) {
+			view_.showAnswerFeedback(false);
+			return;
+		}
+
+		// correct: freeze the countdown and let the view show the success flash
+		// before we tear the screen down
+		solved_ = true;
+		cancelTick();
+		view_.showAnswerFeedback(true);
+		tickHandle_ = scheduler_.scheduleOnce(std::chrono::milliseconds(kCorrectFlashMs),
+											 [this]() { finishSolved(); });
 	}
 
   public:
@@ -77,6 +106,10 @@ class PuzzlePresenter : public Presenter {
 		}
 		if (puzzle_ && alarm) {
 			view_.loadPuzzle(alarm->getPuzzleType(), *puzzle_);
+			const std::string hint = puzzle_->toHint();
+			if (!hint.empty()) {
+				view_.showHint(hint);
+			}
 		}
 
 		view_.setOnSubmitCallback([this](const PuzzleResponse& response) { onSubmit(response); });

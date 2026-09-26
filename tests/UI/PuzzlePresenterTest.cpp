@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <memory>
+#include <vector>
 
 #include "../mock-interfaces/MockClock.h"
 #include "../mock-interfaces/MockStorage.h"
@@ -54,11 +55,103 @@ TEST_CASE("PuzzlePresenter dismisses the alarm on a correct answer") {
 	CHECK(router.navigations.empty());
 	CHECK(manager.isRinging());
 
+	// correct: the view is told the verdict, but the countdown has to be given
+	// time to show the success flash before the screen goes away
 	view.submit(PuzzleResponse(42));
+	CHECK(view.verdicts == std::vector<bool>{false, true});
+	CHECK(router.navigations.empty());
+	CHECK(manager.isRinging());
+	REQUIRE(scheduler.pendingCount() == 1);
+	CHECK(scheduler.nextDelay() == std::chrono::milliseconds(800));
+
+	scheduler.fireNext();
 	REQUIRE(router.lastScreen() == ScreenType::Home);
 	CHECK(manager.wasAlarmDismissed(alarm.getId()));
 	CHECK_FALSE(manager.isRinging());
 	CHECK(scheduler.pendingCount() == 0);
+}
+
+TEST_CASE("PuzzlePresenter does not count input after a correct answer") {
+	MockClock clock;
+	MockStorage storage;
+	MockScheduler scheduler;
+	MockRouter router;
+	MockPuzzleView view;
+	AlarmManager manager(clock, storage);
+
+	Alarm alarm = ringingAlarm(clock, manager);
+	RandomNumberGenerator rng;
+	MockPuzzleFactory factory(std::make_unique<FixedPuzzle>(42), rng);
+
+	PuzzlePresenter presenter(view, router, manager, scheduler, factory, alarm.getId(), 10);
+
+	view.submit(PuzzleResponse(42));
+	REQUIRE(scheduler.pendingCount() == 1);
+
+	// mashing the keypad during the success flash must not revive the countdown
+	view.pressAnyKey();
+	CHECK(view.lastPercent == 100);
+	CHECK(scheduler.pendingCount() == 1);
+	CHECK(router.navigations.empty());
+}
+
+TEST_CASE("PuzzlePresenter will not dismiss an alarm with no puzzle to solve") {
+	MockClock clock;
+	MockStorage storage;
+	MockScheduler scheduler;
+	MockRouter router;
+	MockPuzzleView view;
+	AlarmManager manager(clock, storage);
+
+	Alarm alarm = ringingAlarm(clock, manager);
+	RandomNumberGenerator rng;
+	// a factory that cannot build the requested puzzle hands back nothing,
+	// which used to be read as "solved"
+	MockPuzzleFactory factory(nullptr, rng);
+
+	PuzzlePresenter presenter(view, router, manager, scheduler, factory, alarm.getId(), 10);
+
+	CHECK(view.loadCount == 0);
+	view.submit(PuzzleResponse(0));
+	CHECK(view.verdicts == std::vector<bool>{false});
+	CHECK(router.navigations.empty());
+	CHECK_FALSE(manager.wasAlarmDismissed(alarm.getId()));
+	CHECK(manager.isRinging());
+}
+
+TEST_CASE("PuzzlePresenter shows the hint of a puzzle that needs one") {
+	MockClock clock;
+	MockStorage storage;
+	MockScheduler scheduler;
+	MockRouter router;
+	MockPuzzleView view;
+	AlarmManager manager(clock, storage);
+
+	Alarm alarm = ringingAlarm(clock, manager);
+	RandomNumberGenerator rng;
+	MockPuzzleFactory factory(std::make_unique<FixedPuzzle>(7, "4 8 1\n6 3 9\n2 7 5"), rng);
+
+	PuzzlePresenter presenter(view, router, manager, scheduler, factory, alarm.getId(), 10);
+
+	CHECK(view.hintCount == 1);
+	CHECK(view.hint == "4 8 1\n6 3 9\n2 7 5");
+}
+
+TEST_CASE("PuzzlePresenter shows no hint for a puzzle that needs none") {
+	MockClock clock;
+	MockStorage storage;
+	MockScheduler scheduler;
+	MockRouter router;
+	MockPuzzleView view;
+	AlarmManager manager(clock, storage);
+
+	Alarm alarm = ringingAlarm(clock, manager);
+	RandomNumberGenerator rng;
+	MockPuzzleFactory factory(std::make_unique<FixedPuzzle>(7), rng);
+
+	PuzzlePresenter presenter(view, router, manager, scheduler, factory, alarm.getId(), 10);
+
+	CHECK(view.hintCount == 0);
 }
 
 TEST_CASE("PuzzlePresenter returns to the ringing screen on timeout") {

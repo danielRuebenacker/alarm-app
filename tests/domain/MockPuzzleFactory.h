@@ -3,7 +3,8 @@
 
 #include "src/domain/PuzzleFactory.h"
 
-// Hands out a pre-built puzzle so tests are deterministic.
+// Hands out a pre-built puzzle so tests are deterministic. A null puzzle stands
+// in for a type the factory cannot build.
 class MockPuzzleFactory : public PuzzleFactory {
   private:
 	std::unique_ptr<IPuzzle> puzzle_;
